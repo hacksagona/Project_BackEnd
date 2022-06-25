@@ -2,11 +2,12 @@ package com.project.hack.service;
 
 import com.project.hack.dto.request.CommentRequestDto;
 import com.project.hack.dto.response.CommentResponseDto;
-import com.project.hack.exceptionHandler.CustomException;
-import com.project.hack.exceptionHandler.ErrorCode;
+import com.project.hack.exception.CustomException;
+import com.project.hack.exception.ErrorCode;
 import com.project.hack.model.Comment;
 import com.project.hack.model.Post;
 import com.project.hack.repository.CommentRepository;
+import com.project.hack.repository.PostRepository;
 import com.project.hack.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,11 +19,13 @@ import org.springframework.stereotype.Service;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
 
-    public ResponseEntity createComment(CommentRequestDto commentRequestDto, Long commentId, UserDetailsImpl userDetails, Post post) {
+    public ResponseEntity createComment(CommentRequestDto commentRequestDto, Long postId, UserDetailsImpl userDetails) {
         if(commentRequestDto.getContent().equals("")){
             throw new CustomException(ErrorCode.EMPTY_CONTENT);
         }
+        Post post = postRepository.findById(postId).orElseThrow(()->new IllegalArgumentException("포스트 아이디가 없습니다."));
         Comment comment = new Comment(commentRequestDto, userDetails, post);
         commentRepository.save(comment);
         CommentResponseDto commentResponseDto = new CommentResponseDto(comment);

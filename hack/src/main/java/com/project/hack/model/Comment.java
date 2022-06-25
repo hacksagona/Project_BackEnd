@@ -1,5 +1,6 @@
 package com.project.hack.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.project.hack.dto.request.CommentRequestDto;
 import com.project.hack.security.UserDetailsImpl;
 import lombok.AllArgsConstructor;
@@ -23,10 +24,6 @@ public class Comment extends Timestamped {
     @Column(nullable = false)
     private Long id;
 
-
-    @Column(nullable = false)
-    private Long postId;
-
     @Column(nullable = false)
     private String name;
 
@@ -36,16 +33,17 @@ public class Comment extends Timestamped {
     @Column (nullable = false)
     private String content;
 
+    @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "postId")
+    @JoinColumn(name = "POST_ID")
     private Post post;
 
 
-    public Comment(CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
+    public Comment(CommentRequestDto commentRequestDto, UserDetailsImpl userDetails,Post post) {
         this.id = userDetails.getUser().getId();
         this.content = commentRequestDto.getContent();
-        this.postId = getPostId();
         this.name = userDetails.getUser().getName();
+        this.post = post;
     }
 
     public void updateComment(CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {

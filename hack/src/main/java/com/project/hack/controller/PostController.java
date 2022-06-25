@@ -45,11 +45,11 @@ public class PostController {
 //    }
 
     // 게시글 작성하기
-    @GetMapping("/api/post")
+    @PostMapping("/api/post")
     public Post createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
                          @RequestBody PostRequestDto requestDto) {
 
-        Post post = new Post(userDetails, requestDto);
+        Post post = new Post(requestDto , userDetails);
         return postRepository.save(post);
     }
 

@@ -39,10 +39,13 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String profile_img;
+
     @Column(unique = true)
     private Long kakaoId;
 
-    public User(String email, String name, String p_number, String gender, String location, String birth, String password) {
+    public User(String email, String name, String p_number, String gender, String location, String birth, String password, String profile_img) {
         this.email = email;
         this.name = name;
         this.p_number = p_number;
@@ -50,9 +53,10 @@ public class User {
         this.location = location;
         this.birth = birth;
         this.password = password;
+        this.profile_img= profile_img;
     }
 
-    public User(String email, String name, String p_number, String gender, String location, String birth, String password, Long kakaoId) {
+    public User(String email, String name, String p_number, String gender, String location, String birth, String password, String profile_img,Long kakaoId) {
         this.email = email;
         this.name = name;
         this.p_number = p_number;
@@ -60,6 +64,7 @@ public class User {
         this.location = location;
         this.birth = birth;
         this.password = password;
+        this.profile_img = profile_img;
         this.kakaoId = kakaoId;
     }
 }

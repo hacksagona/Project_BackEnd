@@ -1,8 +1,8 @@
 package com.project.hack.controller;
 
 import com.project.hack.dto.request.CommentRequestDto;
-import com.project.hack.exceptionHandler.CustomException;
-import com.project.hack.exceptionHandler.ErrorCode;
+import com.project.hack.exception.CustomException;
+import com.project.hack.exception.ErrorCode;
 import com.project.hack.model.Post;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.CommentService;
@@ -17,19 +17,19 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/api/post/{post-id}/comment")
-    public ResponseEntity createComment(@RequestBody CommentRequestDto requestDto, @PathVariable Long postid, @AuthenticationPrincipal UserDetailsImpl userDetails, Post post){
+    @PostMapping("/api/post/{postId}/comment")
+    public ResponseEntity createComment(@RequestBody CommentRequestDto requestDto, @PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         if(userDetails == null) {throw new CustomException(ErrorCode.AUTH_TOKEN_NOT_FOUND);}
-        return commentService.createComment(requestDto, postid, userDetails, post);
+        return commentService.createComment(requestDto, postId, userDetails);
     }
 
-    @PutMapping("/api/post/{post-id}/comment/{comment-id}")
+    @PutMapping("/api/post/{postId}/comment/{commentId}")
     public ResponseEntity updateComment(@RequestBody CommentRequestDto requestDto, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         if(userDetails == null) {throw new CustomException(ErrorCode.AUTH_TOKEN_NOT_FOUND);}
         return commentService.updateComment(requestDto, commentId, userDetails);
     }
 
-    @DeleteMapping("/api/post/{post-id}/comment/{comment-id}")
+    @DeleteMapping("/api/post/{postId}/comment/{commentId}")
     public ResponseEntity deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if(userDetails == null) {throw new CustomException(ErrorCode.AUTH_TOKEN_NOT_FOUND);}
         return commentService.deleteComment(commentId, userDetails);

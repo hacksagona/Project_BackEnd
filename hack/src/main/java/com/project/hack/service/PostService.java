@@ -1,11 +1,7 @@
 package com.project.hack.service;
 
 import com.project.hack.dto.request.PostRequestDto;
-import com.project.hack.dto.response.CommentResponseDto;
-import com.project.hack.dto.response.PostResponseDto;
-import com.project.hack.model.Comment;
 import com.project.hack.model.Post;
-import com.project.hack.model.User;
 import com.project.hack.repository.CommentRepository;
 import com.project.hack.repository.PostRepository;
 import com.project.hack.repository.UserRepository;
@@ -23,7 +19,6 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
-    private final User user;
 
 
     public List<Post> getPosts() {

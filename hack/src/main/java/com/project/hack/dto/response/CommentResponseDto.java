@@ -27,13 +27,12 @@ public class CommentResponseDto {
 
     public CommentResponseDto(Comment comment, User user) {
         this.commentId = comment.getCommentId();
-        this.postId = comment.getPostId();
         this.name = user.getName();
         this.content = comment.getContent();
         this.calculatedTime = getCalculatedTime();
+    }
 
     public CommentResponseDto(Comment comment) {
-            this.postId = comment.getPostId();
             this.commentId = comment.getCommentId();
             this.content = comment.getContent();
             this.name = comment.getName();

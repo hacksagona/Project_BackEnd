@@ -30,13 +30,14 @@ public class UserService {
         String gender = requestDto.getGender();
         String location = requestDto.getLocation();
         String birth = requestDto.getBirth();
+        String profile_img = requestDto.getProfile_img();
 
         // 패스워드 암호화
         String password = passwordEncoder.encode(requestDto.getPassword());
 
 
 
-        User user = new User(email, name, p_number, gender, location, birth, password);
+        User user = new User(email, name, p_number, gender, location, birth, password,profile_img);
         userRepository.save(user);
     }
 

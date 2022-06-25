@@ -46,7 +46,7 @@ public class PostResponseDto {
         this.name = post.getName();
         this.email = post.getEmail();
         this.profile_image = post.getProfile_image();
-        this.like = post.getLike();
+        this.like = post.getLikes();
         this.category = post.getCategory();
         this.modifiedAt = post.getModifiedAt();
         this.createdAt = post.getCreatedAt();
