@@ -53,6 +53,14 @@ public class PostController {
         return postRepository.save(post);
     }
 
+    @GetMapping("/api/post/{postId}")
+    public Long getPost(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow (
+                () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+        );
+        return post.getId();
+    }
+
 
     //게시글 불러오기
     @GetMapping("/api/posts")
