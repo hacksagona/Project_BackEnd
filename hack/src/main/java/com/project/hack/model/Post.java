@@ -1,5 +1,6 @@
 package com.project.hack.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.hack.dto.response.PostResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -39,6 +42,9 @@ public class Post extends Timestamped{
     @Column(nullable = false)
     private String category;
 
+    @JsonIgnore //필수
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
 
 
     public Post(Long postId, String title, String content,
