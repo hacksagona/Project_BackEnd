@@ -2,9 +2,9 @@ name: hacksagona-deploy
 
 on:
     push:
-      branches: [ develop_new ]
+      branches: [ main ]
     pull_request:
-      branches: [ develop_new ]
+      branches: [ main ]
 
 
 env: # 새로 추가한 부분 
