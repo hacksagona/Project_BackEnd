@@ -1,7 +1,9 @@
 package com.project.hack.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.project.hack.dto.request.PostRequestDto;
 import com.project.hack.dto.response.PostResponseDto;
+import com.project.hack.security.UserDetailsImpl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +21,7 @@ public class Post extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;
+    private Long Id;
 
     @Column(nullable = false)
     private String title;
@@ -47,11 +49,13 @@ public class Post extends Timestamped{
     private List<Comment> comments = new ArrayList<>();
 
 
-    public Post(Long postId, String title, String content,
-                String name, String email, String profile_img,
-                String like, String category, LocalDateTime modifiedAt,
-                LocalDateTime createdAt) {
-        super();
+    public Post(UserDetailsImpl userDetails, PostRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.name = userDetails.getUser().getName();
+        this.email = userDetails.getUser().getEmail();
+//      this.profile_image = userDetials.getUser().getProfile_img();
+        this.category = requestDto.getCategory();
     }
 
 
@@ -60,11 +64,11 @@ public class Post extends Timestamped{
 //    @OneToMany(mappedBy = "post", orphanRemoval = true)
 //    private List<Comment> comments;
 
-    //게시글 수정
-    public void updatePost(PostResponseDto responseDto) {
-        this.title = responseDto.getTitle();
-        this.content = responseDto.getContent();
-        this.category = responseDto.getCategory();
+                //게시글 수정
+    public void updatePost(PostRequestDto requesteDto) {
+        this.title = requesteDto.getTitle();
+        this.content = requesteDto.getContent();
+        this.category = requesteDto.getCategory();
     }
 
 
