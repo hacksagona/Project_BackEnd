@@ -11,7 +11,7 @@ name: Java CI with Gradle
 on:
   push:
     branches:
-      - main
+      - kokomong
 
 permissions:
   contents: read
