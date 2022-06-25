@@ -1,12 +1,11 @@
 name: hacksagona-deploy
 
 on:
-  #   push:
-  #     branches: [ develop_new ]
-  #   pull_request:
-  #     branches: [ develop_new ]
+    push:
+      branches: [ develop_new ]
+    pull_request:
+      branches: [ develop_new ]
 
-  workflow_dispatch:
 
 env: # 새로 추가한 부분 
 #  S3_BUCKET_NAME: hacksagona-deploy
