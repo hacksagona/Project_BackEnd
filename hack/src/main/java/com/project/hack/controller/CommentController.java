@@ -15,20 +15,29 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/api/post/{post-id}/comment")
-    public ResponseEntity createComment(@RequestBody CommentRequestDto requestDto, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails, Post post){
-        if(userDetails == null) {throw new CustomException(ErrorCode.AUTH_TOKEN_NOT_FOUND);}
+    public ResponseEntity createComment(@RequestBody CommentRequestDto requestDto, @PathVariable Long commentId,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails, Post post){
+        if(userDetails == null) {
+            throw new CustomException(ErrorCode.AUTH_TOKEN_NOT_FOUND);
+        }
         return commentService.createComment(requestDto, postId, userDetails, post);
     }
 
     @PutMapping("/api/post/{post-id}/comment/{comment-id}")
-    public ResponseEntity updateComment(@RequestBody CommentRequestDto requestDto, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        if(userDetails == null) {throw new CustomException(ErrorCode.AUTH_TOKEN_NOT_FOUND);}
+    public ResponseEntity updateComment(@RequestBody CommentRequestDto requestDto, @PathVariable Long commentId,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
+        if(userDetails == null) {
+            throw new CustomException(ErrorCode.AUTH_TOKEN_NOT_FOUND);
+        }
         return commentService.updateComment(requestDto, commentId, userDetails);
     }
 
     @DeleteMapping("/api/post/{post-id}/comment/{comment-id}")
-    public ResponseEntity deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if(userDetails == null) {throw new CustomException(ErrorCode.AUTH_TOKEN_NOT_FOUND);}
+    public ResponseEntity deleteComment(@PathVariable Long commentId,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails == null) {
+            throw new CustomException(ErrorCode.AUTH_TOKEN_NOT_FOUND);
+        }
         return commentService.deleteComment(commentId, userDetails);
     }
 }
