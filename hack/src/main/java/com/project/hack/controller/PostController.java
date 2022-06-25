@@ -1,5 +1,6 @@
 package com.project.hack.controller;
 
+import com.project.hack.dto.request.PostRequestDto;
 import com.project.hack.dto.response.PostResponseDto;
 import com.project.hack.model.Post;
 import com.project.hack.model.User;
@@ -8,10 +9,12 @@ import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,39 +24,50 @@ public class PostController {
     private final PostRepository postRepository;
 
 
-    @PostMapping("/api/post")
-    public Post createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                           @RequestBody PostResponseDto responseDto) {
-        User user = userDetails.getUser();
-        Long postId = responseDto.getPostId();
-        String name = responseDto.getName();
-        String title = responseDto.getTitle();
-        String email = responseDto.getEmail();
-        String content = responseDto.getContent();
-        String profile_img = responseDto.getProfile_image();
-        String like = responseDto.getLike();
-        String category = responseDto.getCategory();
-        LocalDateTime modifiedAt = responseDto.getModifiedAt();
-        LocalDateTime createdAt = responseDto.getCreatedAt();
+//    @PostMapping("/api/post")
+//    public Post createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
+//                           @RequestBody PostResponseDto responseDto) {
+//        User user = userDetails.getUser();
+//        Long postId = responseDto.getPostId();
+//        String name = responseDto.getName();
+//        String title = responseDto.getTitle();
+//        String email = responseDto.getEmail();
+//        String content = responseDto.getContent();
+//        String profile_img = responseDto.getProfile_image();
+//        String like = responseDto.getLike();
+//        String category = responseDto.getCategory();
+//        LocalDateTime modifiedAt = responseDto.getModifiedAt();
+//        LocalDateTime createdAt = responseDto.getCreatedAt();
+//
+//        Post post = new Post(postId, title, content, name,
+//                email, profile_img, like, category, modifiedAt, createdAt);
+//        return postRepository.save(post);
+//    }
 
-        Post post = new Post(postId, title, content, name,
-                email, profile_img, like, category, modifiedAt, createdAt);
+    // 게시글 작성하기
+    @GetMapping("/api/post")
+    public Post createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                         @RequestBody PostRequestDto requestDto) {
+
+        Post post = new Post(userDetails, requestDto);
         return postRepository.save(post);
     }
 
+
     //게시글 불러오기
     @GetMapping("/api/posts")
-    public List<PostResponseDto> getPosts() {
-        return postService.getPosts();
+    public List<Post> getPosts() {
+    return postService.getPosts();
     }
 
     @PutMapping("/api/post/update/{postId}")
     public Long updatePost(@PathVariable Long postId,
-                           @RequestBody PostResponseDto responseDto) {
-        return postService.update(postId, responseDto);
+                           @RequestBody PostRequestDto requestDto) {
+        return postService.update(postId, requestDto);
     }
 
     //게시글 삭제
+
     @DeleteMapping("/api/post/{postId}")
     public Long deletePost(@PathVariable Long postId) {
         postRepository.deleteById(postId);

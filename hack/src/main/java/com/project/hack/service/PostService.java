@@ -1,9 +1,11 @@
 package com.project.hack.service;
 
+import com.project.hack.dto.request.PostRequestDto;
 import com.project.hack.dto.response.CommentResponseDto;
 import com.project.hack.dto.response.PostResponseDto;
 import com.project.hack.model.Comment;
 import com.project.hack.model.Post;
+import com.project.hack.model.User;
 import com.project.hack.repository.CommentRepository;
 import com.project.hack.repository.PostRepository;
 import com.project.hack.repository.UserRepository;
@@ -21,37 +23,50 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final User user;
 
 
-    public List<PostResponseDto> getPosts() {
-        List<PostResponseDto> responseList = new ArrayList<>();
-        List<Post> posts = postRepository.findAll();
+    public List<Post> getPosts() {
+        List<Post> postList = new ArrayList<Post>();
 
-        for(Post post : posts) {
+        List <Post> findPost = postRepository.findAll();
 
-            PostResponseDto postResponseDto = new PostResponseDto(post);
-
-
-            List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
-            List<Comment> comments = commentRepository.findAllByPostId(post.getPostId());
-            for(Comment comment : comments){
-//            for(int j = 0; j < replyList.size(); j++){
-//                Reply reply = replyList.get(j);
-                CommentResponseDto commentResponseDto = new CommentResponseDto(comment, user);
-//                replyResponseDtoList.add(replyResponseDto);
-            }
-            responseList.add(postResponseDto);
+        for(Post post : findPost) {
+            Post posts = postRepository.save(post);
+            postList.add(posts);
         }
-        return responseList;
+        return postList;
     }
 
+//    public List<PostResponseDto> getPosts() {
+//        List<PostResponseDto> responseList = new ArrayList<>();
+//
+//        List<Post> posts = postRepository.findAll();
+//
+//        for(Post post : posts) {
+//
+//            PostResponseDto postResponseDto = new PostResponseDto(post);
+//
+//            List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+//            List<Comment> comments = commentRepository.findAllByPostId(post.getPostId());
+//            for(Comment comment : comments){
+////            for(int j = 0; j < replyList.size(); j++){
+////                Reply reply = replyList.get(j);
+//                CommentResponseDto commentResponseDto = new CommentResponseDto(comment, user);
+////                replyResponseDtoList.add(replyResponseDto);
+//            }
+//            responseList.add(postResponseDto);
+//        }
+//        return responseList;
+//    }
+
     @Transactional
-    public Long update(Long postId, PostResponseDto responseDto) {
+    public Long update(Long postId, PostRequestDto requesteDto) {
 
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다")
         );
-        post.updatePost(responseDto);
-        return post.getPostId();
+        post.updatePost(requesteDto);
+        return post.getId();
     }
 }
