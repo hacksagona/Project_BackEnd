@@ -1,16 +1,20 @@
-on:
-  push:
-    branches:
-      - master
+name: hacksagona-deploy
 
-name: Deploy String boot to Amazon EC2
-env:
-  PROJECT_NAME: action_codedeploy
+on:
+  #   push:
+  #     branches: [ develop_new ]
+  #   pull_request:
+  #     branches: [ develop_new ]
+
+  workflow_dispatch:
+
+env: # 새로 추가한 부분 
+#  S3_BUCKET_NAME: hacksagona-deploy
+  PROJECT_NAME: hacksagona-logging
 
 jobs:
-  deploy:
-    name: DEPLOY
-    runs-on: ubuntu-18.04
+  build:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
