@@ -20,24 +20,26 @@ public class CommentResponseDto {
     private Long postId;
     private Long commentId;
     private String name;
-    private String content;
-    private String profilImage;
+    private String comment;
+    private String profile_img;
     private String calculatedTime;
 
 
     public CommentResponseDto(Comment comment, User user) {
         this.commentId = comment.getCommentId();
         this.name = user.getName();
-        this.content = comment.getContent();
+        this.comment = comment.getComment();
         this.calculatedTime = getCalculatedTime();
     }
 
     public CommentResponseDto(Comment comment) {
             this.commentId = comment.getCommentId();
-            this.content = comment.getContent();
+            this.comment = comment.getComment();
             this.name = comment.getName();
-            this.calculatedTime = calculatedTime;
-        }
+            this.calculatedTime = calculatedTime(comment);
+            this.profile_img = comment.getProfile_img();
+            this.postId = comment.getPost().getId();
+    }
 
         public static String calculatedTime(Comment comment){
             final int SEC = 60;

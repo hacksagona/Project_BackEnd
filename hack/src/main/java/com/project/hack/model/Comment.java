@@ -22,16 +22,16 @@ public class Comment extends Timestamped {
     private Long commentId;
 
     @Column(nullable = false)
-    private Long id;
+    private Long userId;
 
     @Column(nullable = false)
     private String name;
 
     @Column
-    private String profilImg;
+    private String profile_img;
 
     @Column (nullable = false)
-    private String content;
+    private String comment;
 
     @JsonBackReference
     @ManyToOne
@@ -40,15 +40,15 @@ public class Comment extends Timestamped {
 
 
     public Comment(CommentRequestDto commentRequestDto, UserDetailsImpl userDetails,Post post) {
-        this.id = userDetails.getUser().getId();
-        this.content = commentRequestDto.getContent();
+        this.userId = userDetails.getUser().getId();
+        this.comment = commentRequestDto.getComment();
         this.name = userDetails.getUser().getName();
         this.post = post;
+        this.profile_img = userDetails.getUser().getProfile_img();
     }
 
     public void updateComment(CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
-        this.id = userDetails.getUser().getId();
         this.name = userDetails.getUser().getName();
-        this.content = commentRequestDto.getContent();
+        this.comment = commentRequestDto.getComment();
     }
 }

@@ -22,7 +22,7 @@ public class CommentService {
     private final PostRepository postRepository;
 
     public ResponseEntity createComment(CommentRequestDto commentRequestDto, Long postId, UserDetailsImpl userDetails) {
-        if(commentRequestDto.getContent().equals("")){
+        if(commentRequestDto.getComment().equals("")){
             throw new CustomException(ErrorCode.EMPTY_CONTENT);
         }
         Post post = postRepository.findById(postId).orElseThrow(()->new IllegalArgumentException("포스트 아이디가 없습니다."));
@@ -34,7 +34,7 @@ public class CommentService {
     
     public ResponseEntity updateComment(CommentRequestDto commentRequestDto, Long commentId, UserDetailsImpl userDetails) {
         Comment comment = commentRepository.findByCommentId(commentId);
-        if(commentRequestDto.getContent().equals("")){
+        if(commentRequestDto.getComment().equals("")){
             throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
         }
         if (userDetails.getUser().getName().equals(comment.getName())){

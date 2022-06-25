@@ -52,13 +52,13 @@ public class PostController {
         Post post = new Post(requestDto , userDetails);
         return postRepository.save(post);
     }
-
+    //포스트 상세페이지
     @GetMapping("/api/post/{postId}")
-    public Long getPost(Long postId) {
+    public Post getPost(@PathVariable Long postId) {
         Post post = postRepository.findById(postId).orElseThrow (
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
-        return post.getId();
+        return post;
     }
 
 
