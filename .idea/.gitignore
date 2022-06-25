@@ -1,3 +1,10 @@
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+
 # 디폴트 무시된 파일
 /shelf/
 /workspace.xml
@@ -6,3 +13,4 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
