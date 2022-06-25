@@ -41,7 +41,6 @@ public class PostResponseDto {
     private String category;
 
     public PostResponseDto(Post post) {
-        this.postId = post.getPostId();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.name = post.getName();
