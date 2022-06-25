@@ -1,7 +1,10 @@
 package com.project.hack.service;
 
+import com.project.hack.dto.response.CommentResponseDto;
 import com.project.hack.dto.response.PostResponseDto;
+import com.project.hack.model.Comment;
 import com.project.hack.model.Post;
+import com.project.hack.repository.CommentRepository;
 import com.project.hack.repository.PostRepository;
 import com.project.hack.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
 
     public List<PostResponseDto> getPosts() {
@@ -26,8 +30,17 @@ public class PostService {
         for(Post post : posts) {
 
             PostResponseDto postResponseDto = new PostResponseDto(post);
-            responseList.add(postResponseDto);
 
+
+            List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+            List<Comment> comments = commentRepository.findAllByPostId(post.getPostId());
+            for(Comment comment : comments){
+//            for(int j = 0; j < replyList.size(); j++){
+//                Reply reply = replyList.get(j);
+                CommentResponseDto commentResponseDto = new CommentResponseDto(comment, user);
+//                replyResponseDtoList.add(replyResponseDto);
+            }
+            responseList.add(postResponseDto);
         }
         return responseList;
     }
