@@ -14,4 +14,5 @@ public class SignupRequestDto {
     private String p_number;
     private String birth;
     private String profile_img;
+    private String nickname;
 }

@@ -2,8 +2,10 @@ package com.project.hack.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.hack.dto.request.SignupRequestDto;
+import com.project.hack.dto.request.UserRequestDto;
 import com.project.hack.dto.response.UserResponseDto;
 import com.project.hack.model.User;
+import com.project.hack.repository.UserRepository;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.GoogleUserService;
 import com.project.hack.service.KakaoUserService;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
     private final KakaoUserService kakaoUserService;
     private final GoogleUserService googleUserService;
@@ -41,12 +44,6 @@ public class UserController {
         System.out.println("email : " + user.getEmail());
         System.out.println("name : " + user.getName());
         return new UserResponseDto(user.getEmail(), user.getName());
-    }
-
-    @PostMapping("/user/signup/checkEmail")
-    public boolean checkEmail(@RequestBody SignupRequestDto requestDto) {
-
-        return userService.checkEmail(requestDto);
     }
 
     @GetMapping("/oauth/kakao/callback")
@@ -73,4 +70,25 @@ public class UserController {
             return false;
         }
     }
+
+    @PutMapping("/user/update/nickname")
+    public Long loginNickname(@RequestBody UserRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        System.out.println("닉넴 수정 시도");
+        return userService.putNickname(requestDto,userDetails);
+
+    }
+
+    @PostMapping("/user/signup/checkEmail")
+    public boolean checkEmail(@RequestBody SignupRequestDto requestDto) {
+
+        return userService.checkEmail(requestDto);
+    }
+
+    @PostMapping("/user/signup/checkNickname")
+    public boolean checkNickname(@RequestBody SignupRequestDto requestDto) {
+
+        return userService.checkNickname(requestDto);
+    }
+
 }

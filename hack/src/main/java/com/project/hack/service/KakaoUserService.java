@@ -42,12 +42,11 @@ public class KakaoUserService {
     @Transactional
     public void kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
-        String accessToken = getAccessToken(code);
         System.out.println("kakaoClientKId = " + kakaoClientKId);
         System.out.println("kakaoRedirectUri = " + kakaoRedirectUri);
         System.out.println("인가 코드 : " + code);
+        String accessToken = getAccessToken(code);
         System.out.println("엑세스 토큰: " + accessToken);
-        ;
 
         // 2. 토큰으로 카카오 API 호출
         SocialUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
@@ -64,14 +63,12 @@ public class KakaoUserService {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientKId);
         body.add("redirect_uri", kakaoRedirectUri);
         body.add("code", code);
-
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
                 new HttpEntity<>(body, headers);
@@ -110,8 +107,6 @@ public class KakaoUserService {
         System.out.println("유저정보 받는 post는 통과함");
 
         String responseBody = response.getBody();
-        System.out.println("resposneBody " + responseBody);
-
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         Long id = jsonNode.get("id").asLong();
@@ -132,7 +127,7 @@ public class KakaoUserService {
 
     private User registerKakaoUserIfNeeded(SocialUserInfoDto kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
-        System.out.println("카톡유저확인 클래스 들어옴");
+        System.out.println("카톡유저확인 클래스 들어옴===================");
         Long kakaoId = kakaoUserInfo.getId();
         User kakaoUser = userRepository.findByKakaoId(kakaoId)
                 .orElse(null);
@@ -149,12 +144,15 @@ public class KakaoUserService {
             String password = UUID.randomUUID().toString();
             System.out.println("비밀번호 넣음 = " + password);
 
+            String nickname = UUID.randomUUID().toString();
+            System.out.println("닉네임 넣음 = " + password);
+
             String encodedPassword = passwordEncoder.encode(password);
             System.out.println("비밀번호 암호화  = " + encodedPassword);
             String profile_img = kakaoUserInfo.getProfile_img();
             System.out.println("프로필 넣음  = " + profile_img);
 
-            kakaoUser = new User(name, email, encodedPassword, kakaoId, profile_img);
+            kakaoUser = new User(name, nickname,email, encodedPassword, kakaoId, profile_img);
             userRepository.save(kakaoUser);
         }
         System.out.println("카카오톡 유저정보 넣음");
@@ -178,8 +176,8 @@ public class KakaoUserService {
 
         final String token = JwtTokenUtils.generateJwtToken(userDetails1);
 
-        System.out.println("token값:" + token);
-        response.addHeader("Authorization", "BEARER" + " " + token);
+        System.out.println("token값:" +"BEARER " + token);
+        response.addHeader("Authorization", "BEARER " + token);
 
     }
 }
