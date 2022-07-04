@@ -11,7 +11,6 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class MissionRequestDto {
 
-    private Long missionId;
     private String missionContent;
     //private enum category;
 }

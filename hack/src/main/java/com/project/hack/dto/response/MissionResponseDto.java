@@ -1,6 +1,8 @@
 package com.project.hack.dto.response;
 
 
+import com.project.hack.model.Mission;
+import com.project.hack.security.UserDetailsImpl;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -16,4 +18,11 @@ public class MissionResponseDto {
     private Long userId;
     private String missionContent;
     //private enum category;
+
+
+    public MissionResponseDto(Mission mission) {
+        this.missionId = mission.getMissionId();
+        this.missionContent = mission.getMissionContent();
+
+    }
 }
