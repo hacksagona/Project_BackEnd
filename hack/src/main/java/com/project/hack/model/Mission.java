@@ -11,7 +11,6 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Mission {

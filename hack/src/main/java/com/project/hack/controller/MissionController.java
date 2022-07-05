@@ -8,7 +8,6 @@ import com.project.hack.model.Mission;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.MissionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +44,7 @@ public class MissionController {
 
     //목표 수정
     @PutMapping("/api/missions/{missionId}")
-    public ResponseEntity editMission(@RequestBody MissionRequestDto missionRequestDto, @PathVariable Long missionId) {
+    public Long editMission(@RequestBody MissionRequestDto missionRequestDto, @PathVariable Long missionId) {
 
         return missionService.editMission(missionRequestDto, missionId);
     }
