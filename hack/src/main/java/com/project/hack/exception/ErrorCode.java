@@ -15,7 +15,7 @@ public enum ErrorCode {
     INVALID_AUTHORITY(HttpStatus.FORBIDDEN,"권한이 없는 사용자 입니다"),
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
-    Mission_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 목표를 찾을 수 없습니다"),
+    MISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 목표를 찾을 수 없습니다"),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 코멘트를 찾을 수 없습니다"),
     REPLY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 답글을 찾을 수 없습니다"),
     PIN_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 핀을 찾을 수 없습니다"),

@@ -12,5 +12,5 @@ import lombok.Setter;
 public class MissionRequestDto {
 
     private String missionContent;
-    //private enum category;
+    private String category;
 }
