@@ -11,4 +11,6 @@ public class UserRequestDto {
     //    private String passwordCheck;
     private String name;
     private String nickname;
+
+    private String profile_img;
 }
