@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,17 +21,11 @@ import java.util.UUID;
 
 @Service("awsS3Service")
 @RequiredArgsConstructor
-public class AwsServiceImpl {
+public class AwsService {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-
     private final AmazonS3Client amazonS3Client;
-
-//    private final ProfileImgRepository profileImgRepository;
-//
-//    private final JwtTokenService jwtTokenService;
-
     private final AmazonS3 amazonS3;
 
 
@@ -63,7 +58,6 @@ public class AwsServiceImpl {
     public String createFileName(String fileName) {
         return UUID.randomUUID().toString().concat(getFileExtension(fileName));
     }
-
 
     public String getFileExtension(String fileName) { // file 형식이 잘못된 경우를 확인하기 위해 만들어진 로직이며, 파일 타입과 상관없이 업로드할 수 있게 하기 위해 .의 존재 유무만 판단하였습니다.
         try {

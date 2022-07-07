@@ -10,17 +10,13 @@ import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.GoogleUserService;
 import com.project.hack.service.KakaoUserService;
 import com.project.hack.service.UserService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +27,8 @@ public class UserController {
 
     private final KakaoUserService kakaoUserService;
     private final GoogleUserService googleUserService;
+
+
 
 
     //회원가입
@@ -117,14 +115,6 @@ public class UserController {
 
                  () -> new IllegalArgumentException("유저가 존재하지 않습니다")
          );
-
-
-        @PutMapping("/api/mypage")
-        public void updateMyPhoto(@RequestParam("profile-img") MultipartFile multipartFile, @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
-
-        }
-
-
     }
 
 
