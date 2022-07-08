@@ -75,4 +75,16 @@ public class UserService {
         System.out.println("저장완료");
         return user.getId();
     }
+
+
+    @Transactional
+    //마이페이지 수정하기
+    public Long updateMyInfo(Long userId, UserRequestDto userRequestDto) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NullPointerException("유저가 존재하지 않습니다")
+        );
+
+        user.updateUser(userId, userRequestDto);
+        return user.getId();
+    }
 }

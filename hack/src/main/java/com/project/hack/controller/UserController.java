@@ -29,6 +29,8 @@ public class UserController {
     private final GoogleUserService googleUserService;
 
 
+
+
     //회원가입
     @PostMapping("/user/signup")
     public ResponseEntity registerUser(@RequestBody SignupRequestDto requestDto) {
@@ -90,5 +92,37 @@ public class UserController {
 
         return userService.checkNickname(requestDto);
     }
+
+
+    // ===================== 마이 페이지 =======================
+
+    // 1. 마이페이지 불러오기
+    @GetMapping("api/mypage/{userId}")
+    public UserResponseDto getMypage(@PathVariable Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("유저 정보가 존재하지 않습니다")
+        );
+
+        return new UserResponseDto(user.getId(), user.getNickname(), user.getProfile_img());
+    }
+
+    // 2. 마이페이지 수정하기
+    @PutMapping("/api/mypage/{userId}")
+    public User updateMyInfo(@PathVariable Long userId,
+                             @RequestBody UserRequestDto userRequestDto) {
+         userService.updateMyInfo(userId, userRequestDto);
+         return userRepository.findById(userId).orElseThrow(
+
+                 () -> new IllegalArgumentException("유저가 존재하지 않습니다")
+         );
+    }
+
+
+
+
+
+
+
+
 
 }
