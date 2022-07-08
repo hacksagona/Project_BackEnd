@@ -1,6 +1,5 @@
 package com.project.hack.controller;
 
-import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.project.hack.dto.response.PhotoDto;
 import com.project.hack.model.User;
 import com.project.hack.repository.UserRepository;
@@ -21,8 +20,6 @@ import java.util.List;
 @RestController
 public class S3Controller {
     private final AwsService awsService;
-    private final PhotoDto photoDto;
-    private final UserRepository userRepository;
 
     @PostMapping("/images")
     public String upload(@RequestParam("images") List<MultipartFile> multipartFile) throws IOException {

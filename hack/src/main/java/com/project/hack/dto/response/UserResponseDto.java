@@ -27,4 +27,10 @@ public class UserResponseDto {
         this.nickname = nickname;
         this.profile_img = profile_img;
     }
+
+    public UserResponseDto(String email, String name, String nickname) {
+        this.email = email;
+        this.name = name;
+        this.nickname = nickname;
+    }
 }

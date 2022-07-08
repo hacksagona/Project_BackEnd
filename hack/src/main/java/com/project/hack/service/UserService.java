@@ -52,11 +52,16 @@ public class UserService {
 
     public boolean checkNickname(SignupRequestDto requestDto){
         String nickname = requestDto.getNickname();
+        if(nickname ==null|| nickname.equals("")){
+            System.out.println("중복 체크 시도하는 닉네임이 빈값임");
+            throw new CustomException(ErrorCode.NICKNAME_NOT_FOUND);
+        }
+        System.out.println("중복 체크 시도하는 닉네임 : "+ nickname);
         return (!userRepository.findByNickname(nickname).isPresent());
     }
 
     @Transactional
-    public Long putNickname(UserRequestDto requestDto, UserDetailsImpl userDetails) {
+    public User putNickname(UserRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         System.out.println("User = " + user);
         String nickname = requestDto.getNickname();
@@ -73,7 +78,7 @@ public class UserService {
         System.out.println("수정 후 유저 닉네임 : " + user.getNickname());
         userRepository.save(user);
         System.out.println("저장완료");
-        return user.getId();
+        return user;
     }
 
 
