@@ -31,26 +31,26 @@ public class S3Controller {
         return "test";
     }
 
-//    @PostMapping("/api/mypage")
-//    public PhotoDto uploadProfilePic(@AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
-//        List<PhotoDto> photoDtos = awsService.uploadFile(photoDto.get);
-//        return accommodationService.host(requestDto, photoDtos, userDetails);
-//    }
-
     @PostMapping("/api/mypage")
-    public String uploadFile(
-            @RequestPart(value = "file") List<MultipartFile> multipartFile, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-            if(userDetails.getUser() == null) {
-                new NullPointerException("로그인 해주세요");
-            }
-        List<PhotoDto> profileImageList = awsService.uploadFile(multipartFile);
-        for(PhotoDto profileImage : profileImageList) {
-        U
-
-        }
-
-            return fileName;
+    public List<PhotoDto> uploadProfilePic(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                     @RequestPart(value = "file") List<MultipartFile> multipartFile) throws Exception {
+        List<PhotoDto> photoDtos = awsService.uploadFile(multipartFile);
+        return photoDtos;
     }
+
+//    @PostMapping("/api/mypage")
+//    public String uploadFile(
+//            @RequestPart(value = "file") List<MultipartFile> multipartFile, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//            if(userDetails.getUser() == null) {
+//                new NullPointerException("로그인 해주세요");
+//            }
+//        List<PhotoDto> profileImageList = awsService.uploadFile(multipartFile);
+//        for(PhotoDto profileImage : profileImageList) {
+//            photo
+//        }
+//
+//            return fileName;
+//    }
 
 
 
