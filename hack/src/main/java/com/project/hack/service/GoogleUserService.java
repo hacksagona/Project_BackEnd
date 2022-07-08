@@ -9,7 +9,6 @@ import com.project.hack.repository.UserRepository;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.security.jwt.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -67,6 +66,7 @@ public class GoogleUserService {
         System.out.println("getAccessToken 들어옴");
         // 헤더에 Content-type 지정
         HttpHeaders headers = new HttpHeaders();
+        System.out.println("code = " + code);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         // 바디에 필요한 정보 담기
@@ -76,6 +76,7 @@ public class GoogleUserService {
         body.add("code", code);
         body.add("redirect_uri", googleRedirectUri);
         body.add("grant_type", "authorization_code");
+        System.out.println("바디 : " + body);
 
         // POST 요청 보내기
         HttpEntity<MultiValueMap<String, String>> googleToken = new HttpEntity<>(body, headers);
