@@ -29,6 +29,8 @@ public class UserController {
     private final GoogleUserService googleUserService;
 
 
+
+
     //회원가입
     @PostMapping("/user/signup")
     public ResponseEntity registerUser(@RequestBody SignupRequestDto requestDto) {
@@ -43,7 +45,8 @@ public class UserController {
         User user = userDetails.getUser();
         System.out.println("email : " + user.getEmail());
         System.out.println("name : " + user.getName());
-        return new UserResponseDto(user.getEmail(), user.getName());
+        System.out.println("nickname : " + user.getNickname());
+        return new UserResponseDto(user.getEmail(), user.getName(),user.getNickname());
     }
 
     @GetMapping("/oauth/kakao/callback")
@@ -72,8 +75,7 @@ public class UserController {
     }
 
     @PutMapping("/user/update/nickname")
-    public Long loginNickname(@RequestBody UserRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-
+    public User loginNickname(@RequestBody UserRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         System.out.println("닉넴 수정 시도");
         return userService.putNickname(requestDto,userDetails);
 
@@ -90,5 +92,37 @@ public class UserController {
 
         return userService.checkNickname(requestDto);
     }
+
+
+    // ===================== 마이 페이지 =======================
+
+    // 1. 마이페이지 불러오기
+    @GetMapping("api/mypage/{userId}")
+    public UserResponseDto getMypage(@PathVariable Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("유저 정보가 존재하지 않습니다")
+        );
+
+        return new UserResponseDto(user.getId(), user.getNickname(), user.getProfile_img());
+    }
+
+    // 2. 마이페이지 수정하기
+    @PutMapping("/api/mypage/{userId}")
+    public User updateMyInfo(@PathVariable Long userId,
+                             @RequestBody UserRequestDto userRequestDto) {
+         userService.updateMyInfo(userId, userRequestDto);
+         return userRepository.findById(userId).orElseThrow(
+
+                 () -> new IllegalArgumentException("유저가 존재하지 않습니다")
+         );
+    }
+
+
+
+
+
+
+
+
 
 }

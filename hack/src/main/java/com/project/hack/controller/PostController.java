@@ -1,20 +1,15 @@
 package com.project.hack.controller;
 
 import com.project.hack.dto.request.PostRequestDto;
-import com.project.hack.dto.response.PostResponseDto;
 import com.project.hack.model.Post;
-import com.project.hack.model.User;
 import com.project.hack.repository.PostRepository;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
