@@ -8,7 +8,6 @@ import com.project.hack.security.UserDetailsImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -23,8 +22,8 @@ public class MissionService {
 
     private final MissionRepository missionRepository;
 
-    //목표 리스트 조회
-    public List<MissionResponseDto> getMission( ) {
+    //목표 리스트 전체 조회
+    public List<MissionResponseDto> getMission() {
         List<MissionResponseDto> missionResponseDtoList = new ArrayList<>();
         List<Mission> missionList = missionRepository.findAll();
         for (Mission mission : missionList) {
@@ -39,7 +38,6 @@ public class MissionService {
     //목표 생성
     public Mission createMission(MissionRequestDto missionRequestDto, UserDetailsImpl userDetails) {
         Mission mission = new Mission(missionRequestDto, userDetails);
-
         return missionRepository.save(mission);
     }
 

@@ -1,12 +1,10 @@
 package com.project.hack.dto.response;
 
 
-import com.project.hack.dto.request.MissionRequestDto;
+import com.project.hack.enums.Category;
 import com.project.hack.model.Mission;
-import com.project.hack.security.UserDetailsImpl;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -16,16 +14,16 @@ public class MissionResponseDto {
 
     private Long missionId;
     private Long userId;
+    private Category category;
     private String missionContent;
-    private String category;
+    private boolean missionState;
+
 
     public MissionResponseDto(Mission mission) {
+        this.missionId = mission.getMissionId();
+        this.userId = mission.getUserId();
+        this.missionState = mission.getMissionState();
         this.missionContent = mission.getMissionContent();
-        this.category = mission.getCategory();
-    }
-
-    public MissionResponseDto(String category) {
-        this.category = category;
     }
 
 }
