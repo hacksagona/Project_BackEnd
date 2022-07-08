@@ -1,5 +1,6 @@
 package com.project.hack.model;
 
+import com.project.hack.dto.request.UserRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -76,5 +77,13 @@ public class User {
 
     public void updateNickname(String nickname){
         this.nickname = nickname;
+    }
+
+
+    // 마이페이지 업데이트
+    public void updateUser(Long userId, UserRequestDto userRequestDto) {
+        this.id = userId;
+        this.nickname = userRequestDto.getNickname();
+        this.profile_img = userRequestDto.getProfile_img();
     }
 }
