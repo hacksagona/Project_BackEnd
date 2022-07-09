@@ -44,14 +44,14 @@ public class MissionController {
     @GetMapping("/api/category/missions")
     public List<MissionResponseDto> getMission(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {throw new CustomException(ErrorCode.MISSION_NOT_FOUND);}
-        return missionService.getMission();
+        return missionService.getMission(userDetails);
     }
 
     //목표 완료/미완료 리스트 조회
     @GetMapping("/api/category/missions/{missionState}")
-    public List<Mission> getMissionState(@PathVariable Boolean missionState, UserDetailsImpl userDetails) {
+    public List<Mission> getMissionState(@PathVariable Boolean missionState, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {throw new CustomException(ErrorCode.MISSION_NOT_FOUND);}
-        return missionRepository.findByMissionState(missionState);
+        return missionRepository.findByMissionStateAndUserId(missionState,userDetails.getUser().getId());
     }
 
     //목표 생성
@@ -65,6 +65,13 @@ public class MissionController {
     public Long editMission(@RequestBody MissionRequestDto missionRequestDto, @PathVariable Long missionId) {
 
         return missionService.editMission(missionRequestDto, missionId);
+    }
+
+    //목표 완료 상태 변경
+    @PutMapping("/api/missions/changeMissionState/{missionId}")
+    public Long changeMissionState(@PathVariable Long missionId){
+
+        return missionService.changeMissionstate(missionId);
     }
 
     //목표 삭제

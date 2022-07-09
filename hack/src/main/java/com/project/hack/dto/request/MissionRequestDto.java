@@ -11,4 +11,5 @@ public class MissionRequestDto {
 
     private boolean missionState;
     private String missionContent;
+    private String category;
 }

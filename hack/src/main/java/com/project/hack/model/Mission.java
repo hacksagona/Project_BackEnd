@@ -31,7 +31,7 @@ public class Mission /*implements AttributeConverter<Category, String>*/{
     private String missionContent;
 
     @Column(nullable = false)
-    private Boolean missionState = false;
+    private Boolean missionState;
 
 //    @Convert(converter = XXX)
 //    @Column(name = "mission_category")
@@ -40,11 +40,17 @@ public class Mission /*implements AttributeConverter<Category, String>*/{
 
     public Mission(MissionRequestDto missionRequestDto, UserDetailsImpl userDetails) {
         this.missionContent = missionRequestDto.getMissionContent();
+        this.category = missionRequestDto.getCategory();
         this.userId = userDetails.getUser().getId();
+        this.missionState = false;
     }
 
     public void fixMission(MissionRequestDto missionRequestDto) {
         this.missionContent = missionRequestDto.getMissionContent();
+    }
+
+    public void changeMissionState(boolean missionState){
+        this.missionState = missionState;
     }
 
 //    @Override

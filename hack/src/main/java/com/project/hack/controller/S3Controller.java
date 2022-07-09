@@ -1,8 +1,6 @@
 package com.project.hack.controller;
 
 import com.project.hack.dto.response.PhotoDto;
-import com.project.hack.model.User;
-import com.project.hack.repository.UserRepository;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.AwsService;
 import lombok.RequiredArgsConstructor;

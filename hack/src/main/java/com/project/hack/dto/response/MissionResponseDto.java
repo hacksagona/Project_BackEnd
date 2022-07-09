@@ -14,7 +14,7 @@ public class MissionResponseDto {
 
     private Long missionId;
     private Long userId;
-    private Category category;
+    private String category;
     private String missionContent;
     private boolean missionState;
 
@@ -24,6 +24,7 @@ public class MissionResponseDto {
         this.userId = mission.getUserId();
         this.missionState = mission.getMissionState();
         this.missionContent = mission.getMissionContent();
+        this.category =mission.getCategory();
     }
 
 }

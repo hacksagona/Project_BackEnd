@@ -3,6 +3,7 @@ package com.project.hack.service;
 import com.project.hack.dto.request.MissionRequestDto;
 import com.project.hack.dto.response.MissionResponseDto;
 import com.project.hack.model.Mission;
+import com.project.hack.model.User;
 import com.project.hack.repository.MissionRepository;
 import com.project.hack.security.UserDetailsImpl;
 import lombok.Getter;
@@ -23,9 +24,10 @@ public class MissionService {
     private final MissionRepository missionRepository;
 
     //목표 리스트 전체 조회
-    public List<MissionResponseDto> getMission() {
+    public List<MissionResponseDto> getMission(UserDetailsImpl userDetails) {
         List<MissionResponseDto> missionResponseDtoList = new ArrayList<>();
-        List<Mission> missionList = missionRepository.findAll();
+        User user = userDetails.getUser();
+        List<Mission> missionList = missionRepository.findByUserId(user.getId());
         for (Mission mission : missionList) {
             /* for (int i = 0; i < missionList.size(); i++) {
                 Mission mission = missionList.get(i); */
@@ -53,6 +55,15 @@ public class MissionService {
     @Transactional
     public Long deleteMission(Long missionId) {
         missionRepository.deleteById(missionId);
+        return missionId;
+    }
+
+    public Long changeMissionstate(Long missionId) {
+        Mission mission = missionRepository.findByMissionId(missionId);
+        if(mission.getMissionState()){
+            mission.changeMissionState(false);
+        }else {mission.changeMissionState(true);}
+        missionRepository.save(mission);
         return missionId;
     }
 }
