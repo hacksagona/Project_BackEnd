@@ -46,7 +46,7 @@ public class UserController {
         System.out.println("email : " + user.getEmail());
         System.out.println("name : " + user.getName());
         System.out.println("nickname : " + user.getNickname());
-        return new UserResponseDto(user.getEmail(), user.getName(),user.getNickname());
+        return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img());
     }
 
     @GetMapping("/oauth/kakao/callback")
@@ -75,9 +75,9 @@ public class UserController {
     }
 
     @PutMapping("/user/update/nickname")
-    public User loginNickname(@RequestBody UserRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public Long loginNickname(@RequestBody UserRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         System.out.println("닉넴 수정 시도");
-        return userService.putNickname(requestDto,userDetails);
+        return userService.putNickname(requestDto,userDetails).getId();
 
     }
 

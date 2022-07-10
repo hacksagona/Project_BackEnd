@@ -1,5 +1,6 @@
 package com.project.hack.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.hack.dto.request.UserRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Builder
@@ -42,28 +44,9 @@ public class User {
     @Column(unique = true)
     private Long googleId;
 
-//    public User(String email, String name, String p_number, String gender, String location, String birth, String password, String profile_img) {
-//        this.email = email;
-//        this.name = name;
-//        this.p_number = p_number;
-//        this.gender = gender;
-//        this.location = location;
-//        this.birth = birth;
-//        this.password = password;
-//        this.profile_img= profile_img;
-//    }
-//
-//    public User(String email, String name, String p_number, String gender, String location, String birth, String password, String profile_img,Long kakaoId) {
-//        this.email = email;
-//        this.name = name;
-//        this.p_number = p_number;
-//        this.gender = gender;
-//        this.location = location;
-//        this.birth = birth;
-//        this.password = password;
-//        this.profile_img = profile_img;
-//        this.kakaoId = kakaoId;
-//    }
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Post> posts;
 
 
     public User(String name, String nickname,String email, String encodedPassword, Long kakaoId, String profile_img) {

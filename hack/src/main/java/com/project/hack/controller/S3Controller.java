@@ -27,9 +27,9 @@ public class S3Controller {
     }
 
     @PostMapping("/api/mypage")
-    public List<PhotoDto> uploadProfilePic(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public PhotoDto uploadProfilePic(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                      @RequestPart(value = "file") List<MultipartFile> multipartFile) throws Exception {
-        List<PhotoDto> photoDtos = awsService.uploadFile(multipartFile);
+        PhotoDto photoDtos = awsService.uploadFile(multipartFile);
         return photoDtos;
     }
 

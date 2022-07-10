@@ -1,5 +1,6 @@
 package com.project.hack.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.hack.dto.request.PostRequestDto;
 import com.project.hack.security.UserDetailsImpl;
@@ -19,47 +20,36 @@ public class Post extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long postId;
 
     @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
-    private String content;
-
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
-    private String profile_image;
-
-    @Column
-    private String likes;
+    private String postContent;
 
     @Column(nullable = false)
     private String category;
+
+    @Column(nullable = false)
+    private String photoUrl;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<Comment> comments;
 
 
-    public Post(PostRequestDto requestDto, UserDetailsImpl userDetails) {
-        this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
-        this.name = userDetails.getUser().getName();
-        this.email = userDetails.getUser().getEmail();
-        this.profile_image = userDetails.getUser().getProfile_img();
+    public Post(PostRequestDto requestDto, User user, String photoUrl) {
+        this.postContent = requestDto.getPostContent();
         this.category = requestDto.getCategory();
+        this.photoUrl = photoUrl;
+        this.user = user;
     }
 
                 //게시글 수정
     public void updatePost(PostRequestDto requesteDto) {
-        this.title = requesteDto.getTitle();
-        this.content = requesteDto.getContent();
-        this.category = requesteDto.getCategory();
+
     }
 }

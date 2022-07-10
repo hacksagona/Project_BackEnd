@@ -27,6 +27,9 @@ public class Comment extends Timestamped {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String nickname;
+
     @Column
     private String profile_img;
 
@@ -42,13 +45,14 @@ public class Comment extends Timestamped {
     public Comment(CommentRequestDto commentRequestDto, UserDetailsImpl userDetails,Post post) {
         this.userId = userDetails.getUser().getId();
         this.comment = commentRequestDto.getComment();
+        this.nickname=userDetails.getUser().getNickname();
         this.name = userDetails.getUser().getName();
         this.post = post;
         this.profile_img = userDetails.getUser().getProfile_img();
     }
 
     public void updateComment(CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
-        this.name = userDetails.getUser().getName();
+        this.nickname = userDetails.getUser().getNickname();
         this.comment = commentRequestDto.getComment();
     }
 }

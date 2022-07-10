@@ -29,7 +29,7 @@ public class AwsService {
     private final AmazonS3 amazonS3;
 
 
-    public List<PhotoDto> uploadFile(List<MultipartFile> multipartFile) {
+    public PhotoDto uploadFile(List<MultipartFile> multipartFile) {
         List<PhotoDto> photoDtos = new ArrayList<>();
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
         multipartFile.forEach(file -> {
@@ -51,7 +51,7 @@ public class AwsService {
                     .build();
             photoDtos.add(photoDto);
         });
-        return photoDtos;
+        return photoDtos.get(0);
     }
 
 

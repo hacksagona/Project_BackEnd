@@ -20,9 +20,6 @@ public class Photo {
     @Column(nullable = false)
     private String url;
 
-    @ManyToOne
-    @JoinColumn(name ="postId")
-    private Post post;
 
     public Photo(PhotoDto photoDto){
         this.key = photoDto.getKey();

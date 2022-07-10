@@ -8,6 +8,7 @@ import com.project.hack.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,33 +20,13 @@ public class PostController {
     private final PostRepository postRepository;
 
 
-//    @PostMapping("/api/post")
-//    public Post createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
-//                           @RequestBody PostResponseDto responseDto) {
-//        User user = userDetails.getUser();
-//        Long postId = responseDto.getPostId();
-//        String name = responseDto.getName();
-//        String title = responseDto.getTitle();
-//        String email = responseDto.getEmail();
-//        String content = responseDto.getContent();
-//        String profile_img = responseDto.getProfile_image();
-//        String like = responseDto.getLike();
-//        String category = responseDto.getCategory();
-//        LocalDateTime modifiedAt = responseDto.getModifiedAt();
-//        LocalDateTime createdAt = responseDto.getCreatedAt();
-//
-//        Post post = new Post(postId, title, content, name,
-//                email, profile_img, like, category, modifiedAt, createdAt);
-//        return postRepository.save(post);
-//    }
-
     // 게시글 작성하기
     @PostMapping("/api/post")
     public Post createPost(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                         @RequestBody PostRequestDto requestDto) {
+                         @RequestPart(value = "data") PostRequestDto requestDto,
+                           @RequestPart(value = "file") List<MultipartFile> multipartFile) {
+        return postService.createPost(userDetails,requestDto,multipartFile);
 
-        Post post = new Post(requestDto , userDetails);
-        return postRepository.save(post);
     }
     //포스트 상세페이지
     @GetMapping("/api/post/{postId}")

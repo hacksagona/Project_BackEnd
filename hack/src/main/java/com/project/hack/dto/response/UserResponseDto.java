@@ -5,7 +5,6 @@ import lombok.*;
 
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserResponseDto {
     private String email;
@@ -32,5 +31,13 @@ public class UserResponseDto {
         this.email = email;
         this.name = name;
         this.nickname = nickname;
+    }
+
+    public UserResponseDto(String email, String name, Long userId, String nickname, String profile_img) {
+        this.email = email;
+        this.name = name;
+        this.userId = userId;
+        this.nickname = nickname;
+        this.profile_img = profile_img;
     }
 }

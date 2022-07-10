@@ -19,6 +19,7 @@ import java.time.temporal.ChronoUnit;
 public class CommentResponseDto {
     private Long postId;
     private Long commentId;
+    private String nickname;
     private String name;
     private String comment;
     private String profile_img;
@@ -27,6 +28,7 @@ public class CommentResponseDto {
 
     public CommentResponseDto(Comment comment, User user) {
         this.commentId = comment.getCommentId();
+        this.nickname = user.getNickname();
         this.name = user.getName();
         this.comment = comment.getComment();
         this.calculatedTime = getCalculatedTime();
@@ -36,9 +38,10 @@ public class CommentResponseDto {
             this.commentId = comment.getCommentId();
             this.comment = comment.getComment();
             this.name = comment.getName();
+            this.nickname=comment.getNickname();
             this.calculatedTime = calculatedTime(comment);
             this.profile_img = comment.getProfile_img();
-            this.postId = comment.getPost().getId();
+            this.postId = comment.getPost().getPostId();
     }
 
         public static String calculatedTime(Comment comment){

@@ -29,6 +29,8 @@ public class TestDataRunner implements ApplicationRunner {
 // 테스트 User 생성
         User testUser = new User("백재", "다다다다","kohjh02@naver.com", passwordEncoder.encode("123456"), 2322672142L, "http://k.kakaocdn.net/dn/w9nwX/btrGhywlMs9/wSCPM5tqAbh0u3CrPAj0mk/img_640x640.jpg");
         testUser = userRepository.save(testUser);
+        User testUser2 = new User("김준호 Kevin", "123456","kevinkim2413@naver.com", passwordEncoder.encode("123456"), 2324023036L, "http://k.kakaocdn.net/dn/ofNmX/btrAYlOcFRH/MF4Jx9HfuJH3K1CzgX5vX1/img_640x640.jpg");
+        testUser2 = userRepository.save(testUser2);
 
 // 테스트 User 의 관심상품 등록
 // 검색어 당 관심상품 10개 등록
