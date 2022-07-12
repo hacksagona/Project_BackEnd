@@ -6,10 +6,7 @@ import com.project.hack.dto.response.PostResponseDto;
 import com.project.hack.model.Mission;
 import com.project.hack.model.Post;
 import com.project.hack.model.User;
-import com.project.hack.repository.CommentRepository;
-import com.project.hack.repository.MissionRepository;
-import com.project.hack.repository.PostRepository;
-import com.project.hack.repository.UserRepository;
+import com.project.hack.repository.*;
 import com.project.hack.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,19 +21,21 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
+    private final PostLikesRepository postLikesRepository;
+
     private final MissionRepository missionRepository;
     private final AwsService awsService;
 
-    public List<Post> getPosts() {
-        List<Post> postList = new ArrayList<Post>();
+    public List<PostResponseDto> getPosts() {
+        List<PostResponseDto> postList = new ArrayList<>();
 
         List <Post> findPost = postRepository.findAll();
 
         for(Post post : findPost) {
-            Post posts = postRepository.save(post);
-            postList.add(posts);
+
+            int likes = postLikesRepository.findByPostId(post.getPostId()).size();
+            PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(),likes);
+            postList.add(postResponseDto);
         }
         return postList;
     }
@@ -65,7 +64,7 @@ public class PostService {
     }
 
     public PostResponseDto getpost(Post post) {
-        User user = post.getUser();
-        return new PostResponseDto(post, user);
+        int likes = postLikesRepository.findByPostId(post.getPostId()).size();
+        return new PostResponseDto(post,likes);
     }
 }

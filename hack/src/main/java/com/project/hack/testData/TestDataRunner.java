@@ -27,9 +27,9 @@ public class TestDataRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 // 테스트 User 생성
-        User testUser = new User("백재", "다다다다","kohjh02@naver.com", passwordEncoder.encode("123456"), 2322672142L, "http://k.kakaocdn.net/dn/w9nwX/btrGhywlMs9/wSCPM5tqAbh0u3CrPAj0mk/img_640x640.jpg");
+        User testUser = new User("김준호 Kevin", "김준호님","kevinkim2413@naver.com", passwordEncoder.encode("123456"), 2322672142L, "https://play-lh.googleusercontent.com/38AGKCqmbjZ9OuWx4YjssAz3Y0DTWbiM5HB0ove1pNBq_o9mtWfGszjZNxZdwt_vgHo=w240-h480-rw");
         testUser = userRepository.save(testUser);
-        User testUser2 = new User("김준호 Kevin", "123456","kevinkim2413@naver.com", passwordEncoder.encode("123456"), 2324023036L, "http://k.kakaocdn.net/dn/ofNmX/btrAYlOcFRH/MF4Jx9HfuJH3K1CzgX5vX1/img_640x640.jpg");
+        User testUser2 = new User("Junho Kevin Kim", "구글로그인","junho2413@gmail.com", passwordEncoder.encode("123456"), 2324023036L, "https://play-lh.googleusercontent.com/38AGKCqmbjZ9OuWx4YjssAz3Y0DTWbiM5HB0ove1pNBq_o9mtWfGszjZNxZdwt_vgHo=w240-h480-rw");
         testUser2 = userRepository.save(testUser2);
 
 // 테스트 User 의 관심상품 등록

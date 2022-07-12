@@ -41,7 +41,7 @@ public class PostController {
 
     //게시글 불러오기
     @GetMapping("/api/posts")
-    public List<Post> getPosts() {
+    public List<PostResponseDto> getPosts() {
     return postService.getPosts();
     }
 
