@@ -3,6 +3,7 @@ package com.project.hack.controller;
 import com.project.hack.dto.request.CommentRequestDto;
 import com.project.hack.exception.CustomException;
 import com.project.hack.exception.ErrorCode;
+import com.project.hack.model.Comment;
 import com.project.hack.model.Post;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.CommentService;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,6 +36,11 @@ public class CommentController {
     public ResponseEntity deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if(userDetails == null) {throw new CustomException(ErrorCode.AUTH_TOKEN_NOT_FOUND);}
         return commentService.deleteComment(commentId, userDetails);
+    }
+
+    @GetMapping("/api/post/{postId}/comment")
+    public List<Comment> getComment(@PathVariable Long postId){
+        return commentService.getComment(postId);
     }
 }
 

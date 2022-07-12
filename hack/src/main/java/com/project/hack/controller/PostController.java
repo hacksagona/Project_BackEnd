@@ -1,6 +1,7 @@
 package com.project.hack.controller;
 
 import com.project.hack.dto.request.PostRequestDto;
+import com.project.hack.dto.response.PostResponseDto;
 import com.project.hack.model.Post;
 import com.project.hack.repository.PostRepository;
 import com.project.hack.security.UserDetailsImpl;
@@ -30,11 +31,11 @@ public class PostController {
     }
     //포스트 상세페이지
     @GetMapping("/api/post/{postId}")
-    public Post getPost(@PathVariable Long postId) {
+    public PostResponseDto getPost(@PathVariable Long postId) {
         Post post = postRepository.findById(postId).orElseThrow (
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
-        return post;
+        return postService.getpost(post);
     }
 
 

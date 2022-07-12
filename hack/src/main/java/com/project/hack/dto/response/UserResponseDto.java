@@ -3,9 +3,11 @@ package com.project.hack.dto.response;
 import com.project.hack.model.User;
 import lombok.*;
 
+@Builder
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserResponseDto {
     private String email;
     private String name;
@@ -13,6 +15,7 @@ public class UserResponseDto {
     private Long userId;
     private String nickname;
     private String profile_img;
+    private boolean isNewUser;
 
 
 

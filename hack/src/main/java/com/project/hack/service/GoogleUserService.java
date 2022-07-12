@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hack.dto.response.SocialUserInfoDto;
+import com.project.hack.dto.response.UserResponseDto;
 import com.project.hack.model.User;
 import com.project.hack.repository.UserRepository;
 import com.project.hack.security.UserDetailsImpl;
@@ -46,7 +47,7 @@ public class GoogleUserService {
     private final PasswordEncoder passwordEncoder;
     // 구글 로그인
 
-    public void GoogleLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public UserResponseDto GoogleLogin(String code, HttpServletResponse response) throws JsonProcessingException {
 
         // 인가코드로 엑세스토큰 가져오기
         String accessToken = getAccessToken(code);
@@ -59,6 +60,12 @@ public class GoogleUserService {
 
         // 4. 강제 로그인 처리
         jwtTokenCreate(googleUser, response);
+
+        return UserResponseDto.builder()
+                .userId(googleUser.getId())
+                .isNewUser(googleUser.isNewUser())
+                .email(googleUser.getEmail())
+                .profile_img(googleUser.getProfile_img()).build();
     }
 
     // 인가코드로 엑세스토큰 가져오기
@@ -127,24 +134,25 @@ public class GoogleUserService {
         Long id = googleUserInfo.get("sub").asLong();
         String email = googleUserInfo.get("email").asText();
         String nickname = googleUserInfo.get("name").asText();
-        String profile_image = googleUserInfo.get("picture").asText();
+        String profile_img = googleUserInfo.get("picture").asText();
 
         System.out.println("로그인 이용자 정보");
         System.out.println("구글 고유 ID : " + id);
         System.out.println("닉네임 : " + nickname);
         System.out.println("이메일 : " + email);
-        System.out.println("프로필이미지 URL : " + profile_image);
+        System.out.println("프로필이미지 URL : " + profile_img);
 
         return SocialUserInfoDto.builder()
                 .id(id)
+                .social("Google")
                 .email(email)
                 .nickname(nickname)
-                .profile_img(profile_image).build();
+                .profile_img(profile_img).build();
     }
 
 
     private User registerGoogleUserIfNeeded(SocialUserInfoDto googleUserInfo) {
-        // DB 에 중복된 Kakao Id 가 있는지 확인
+        // DB 에 중복된 구글 Id 가 있는지 확인
         System.out.println("구글유저확인 클래스 들어옴");
         Long googleId = googleUserInfo.getId();
         User googleUser = userRepository.findByGoogleId(googleId)
@@ -153,10 +161,13 @@ public class GoogleUserService {
             // 회원가입
             // username: kakao nickname
             String name = googleUserInfo.getNickname();
-            System.out.println("닉네임 넣음 = " + name);
+            System.out.println("네임 넣음 = " + name);
 //            String username = kakaoUserInfo.getNickname();
             String email = googleUserInfo.getEmail();
             System.out.println("이메일 넣음 = " + email);
+
+            String nickname = UUID.randomUUID().toString();
+            System.out.println("닉네임 넣음 = " + nickname);
 
             // password: random UUID
             String password = UUID.randomUUID().toString();
@@ -164,15 +175,18 @@ public class GoogleUserService {
 
             String encodedPassword = passwordEncoder.encode(password);
             System.out.println("비밀번호 암호화  = " + encodedPassword);
-            String profile_img = googleUserInfo.getProfile_img();
+//            String profile_img = googleUserInfo.getProfile_img();
+            String profile_img = "https://play-lh.googleusercontent.com/38AGKCqmbjZ9OuWx4YjssAz3Y0DTWbiM5HB0ove1pNBq_o9mtWfGszjZNxZdwt_vgHo=w240-h480-rw";
             System.out.println("프로필 넣음  = " + profile_img);
 
             googleUser = User.builder()
                     .name(name)
+                    .nickname(nickname)
                     .email(email)
                     .password(encodedPassword)
                     .googleId(googleId)
                     .profile_img(profile_img)
+                    .isNewUser(true)
                     .build();
             userRepository.save(googleUser);
         }

@@ -44,6 +44,9 @@ public class User {
     @Column(unique = true)
     private Long googleId;
 
+    @Column(nullable = false)
+    private boolean isNewUser;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Post> posts;
@@ -56,11 +59,13 @@ public class User {
         this.password = encodedPassword;
         this.kakaoId= kakaoId;
         this.profile_img = profile_img;
+        this.isNewUser = true;
     }
 
     public void updateNickname(String nickname){
         this.nickname = nickname;
     }
+    public void updateIsNewUser(){this.isNewUser = false;}
 
 
     // 마이페이지 업데이트

@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -47,10 +49,16 @@ public class CommentService {
 
     public ResponseEntity deleteComment(Long commentId, UserDetailsImpl userDetails) {
         Comment comment = commentRepository.findByCommentId(commentId);
-        if(userDetails.getUser().getId().equals(comment.getCommentId())){
+        if(userDetails.getUser().getId().equals(comment.getUserId())){
             commentRepository.delete(comment);
             return new ResponseEntity("삭제 완료", HttpStatus.OK);
         }
         throw new CustomException(ErrorCode.INVALID_AUTHORITY);
+    }
+
+    public List<Comment> getComment(Long postId) {
+        List<Comment> commentList = postRepository.findById(postId).get().getComments();
+        return commentList;
+
     }
 }

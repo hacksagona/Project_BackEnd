@@ -92,4 +92,11 @@ public class UserService {
         user.updateUser(userId, userRequestDto);
         return user.getId();
     }
+
+    public boolean updateIsNewUser(UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
+        user.updateIsNewUser();
+        userRepository.save(user);
+        return user.isNewUser();
+    }
 }

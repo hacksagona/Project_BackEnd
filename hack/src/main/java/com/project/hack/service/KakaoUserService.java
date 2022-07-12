@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hack.dto.response.SocialUserInfoDto;
+import com.project.hack.dto.response.UserResponseDto;
 import com.project.hack.model.User;
 import com.project.hack.repository.UserRepository;
 import com.project.hack.security.UserDetailsImpl;
@@ -40,10 +41,9 @@ public class KakaoUserService {
     private String kakaoRedirectUri;
 
     @Transactional
-    public void kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public UserResponseDto kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
-        System.out.println("kakaoClientKId = " + kakaoClientKId);
-        System.out.println("kakaoRedirectUri = " + kakaoRedirectUri);
+
         System.out.println("인가 코드 : " + code);
         String accessToken = getAccessToken(code);
         System.out.println("엑세스 토큰: " + accessToken);
@@ -56,6 +56,12 @@ public class KakaoUserService {
 
         // 4. 강제 로그인 처리
         jwtTokenCreate(kakaoUser, response);
+
+        return UserResponseDto.builder()
+                .userId(kakaoUser.getId())
+                .isNewUser(kakaoUser.isNewUser())
+                .email(kakaoUser.getEmail())
+                .profile_img(kakaoUser.getProfile_img()).build();
     }
 
     private String getAccessToken(String code) throws JsonProcessingException {
@@ -112,7 +118,7 @@ public class KakaoUserService {
         Long id = jsonNode.get("id").asLong();
         System.out.println("id = " + id);
 
-        String name = jsonNode.get("properties")
+        String nickname = jsonNode.get("properties")
                 .get("nickname").asText();
 
         String profile_img = jsonNode.get("properties")
@@ -121,8 +127,13 @@ public class KakaoUserService {
         String email = jsonNode.get("kakao_account")
                 .get("email").asText();
 
-        System.out.println("카카오 사용자 정보: " + id + ", " + name + ","+profile_img+", "+ email);
-        return new SocialUserInfoDto(id, name,profile_img, email);
+        System.out.println("카카오 사용자 정보: " + id + ", " + nickname + ","+profile_img+", "+ email);
+        return SocialUserInfoDto.builder()
+                .id(id)
+                .social("Kakao")
+                .email(email)
+                .nickname(nickname)
+                .profile_img(profile_img).build();
     }
 
     private User registerKakaoUserIfNeeded(SocialUserInfoDto kakaoUserInfo) {
@@ -145,11 +156,12 @@ public class KakaoUserService {
             System.out.println("비밀번호 넣음 = " + password);
 
             String nickname = UUID.randomUUID().toString();
-            System.out.println("닉네임 넣음 = " + password);
+            System.out.println("닉네임 넣음 = " + nickname);
 
             String encodedPassword = passwordEncoder.encode(password);
             System.out.println("비밀번호 암호화  = " + encodedPassword);
-            String profile_img = kakaoUserInfo.getProfile_img();
+//            String profile_img = kakaoUserInfo.getProfile_img();
+            String profile_img = "https://play-lh.googleusercontent.com/38AGKCqmbjZ9OuWx4YjssAz3Y0DTWbiM5HB0ove1pNBq_o9mtWfGszjZNxZdwt_vgHo=w240-h480-rw";
             System.out.println("프로필 넣음  = " + profile_img);
 
             kakaoUser = new User(name, nickname,email, encodedPassword, kakaoId, profile_img);

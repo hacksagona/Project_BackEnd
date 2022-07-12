@@ -9,6 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SocialUserInfoDto {
     private Long id;
+    private String social;
     private String nickname;
     private String profile_img;
     private String email;

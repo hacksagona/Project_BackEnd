@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.hack.dto.request.SignupRequestDto;
 import com.project.hack.dto.request.UserRequestDto;
 import com.project.hack.dto.response.UserResponseDto;
+import com.project.hack.exception.CustomException;
+import com.project.hack.exception.ErrorCode;
 import com.project.hack.model.User;
 import com.project.hack.repository.UserRepository;
 import com.project.hack.security.UserDetailsImpl;
@@ -44,33 +46,31 @@ public class UserController {
         System.out.println("islogin 시작");
         User user = userDetails.getUser();
         System.out.println("email : " + user.getEmail());
-        System.out.println("name : " + user.getName());
         System.out.println("nickname : " + user.getNickname());
         return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img());
     }
 
     @GetMapping("/oauth/kakao/callback")
-    public boolean kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    public UserResponseDto kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 
         try { // 회원가입 진행 성공시 true
-            kakaoUserService.kakaoLogin(code, response);
-            return true;
+            return kakaoUserService.kakaoLogin(code, response);
         }catch (Exception e){ // 에러나면 false
             System.out.println("카톡 로그인 성공 못함!");
-            return false;
+            throw new CustomException(ErrorCode.INVALID_LOGIN_ATTEMPT);
         }
     }
 
     @GetMapping("/oauth/google/callback")
-    public boolean GoogleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    public ResponseEntity GoogleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 
         try { // 회원가입 진행 성공시 true
             System.out.println("구글 로그인 시도");
-            googleUserService.GoogleLogin(code, response);
-            return true;
+            UserResponseDto userResponseDto = googleUserService.GoogleLogin(code, response);
+            return new ResponseEntity(userResponseDto,HttpStatus.OK);
         }catch (Exception e){ // 에러나면 false
             System.out.println("구글 로그인 성공 못함!");
-            return false;
+            throw new CustomException(ErrorCode.INVALID_LOGIN_ATTEMPT);
         }
     }
 
@@ -79,6 +79,10 @@ public class UserController {
         System.out.println("닉넴 수정 시도");
         return userService.putNickname(requestDto,userDetails).getId();
 
+    }
+    @PutMapping("/user/update/isNewUser")
+    public boolean updateIsNewUser(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return !userService.updateIsNewUser(userDetails);
     }
 
     @PostMapping("/user/signup/checkEmail")
@@ -112,7 +116,6 @@ public class UserController {
                              @RequestBody UserRequestDto userRequestDto) {
          userService.updateMyInfo(userId, userRequestDto);
          return userRepository.findById(userId).orElseThrow(
-
                  () -> new IllegalArgumentException("유저가 존재하지 않습니다")
          );
     }
