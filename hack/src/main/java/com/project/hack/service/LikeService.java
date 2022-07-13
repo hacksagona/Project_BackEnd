@@ -57,4 +57,9 @@ public class LikeService {
 
 
     }
+
+    public boolean getIsLiked(Long postId, UserDetailsImpl userDetails) {
+        return postLikesRepository.findByUserIdAndPostId(userDetails.getUser().getId(),postId).isPresent();
+
+    }
 }

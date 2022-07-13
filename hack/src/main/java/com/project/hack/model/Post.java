@@ -48,7 +48,15 @@ public class Post extends Timestamped{
         this.user = user;
     }
 
-                //게시글 수정
+    //테스터 데이터를 위한 생성자
+    public Post(String postContent, String category, String photoUrl, User user) {
+        this.postContent = postContent;
+        this.category = category;
+        this.photoUrl = photoUrl;
+        this.user = user;
+    }
+
+    //게시글 수정
     public void updatePost(PostRequestDto requesteDto) {
 
     }

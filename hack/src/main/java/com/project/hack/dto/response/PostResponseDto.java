@@ -25,6 +25,8 @@ public class PostResponseDto {
 
     private String postContent;
 
+    private Long userId;
+
 
     private String nickname;
     private String photoUrl;
@@ -43,6 +45,7 @@ public class PostResponseDto {
     private List<Comment> commentList;
 
     public PostResponseDto(Post post, int likes) {
+        this.userId = post.getUser().getId();
         this.postId = post.getPostId();
         this.postContent = post.getPostContent();
         this.nickname = post.getUser().getNickname();
@@ -56,6 +59,7 @@ public class PostResponseDto {
         this.commentList = post.getComments();
     }
     public PostResponseDto(Post post, User user, int likes) {
+        this.userId = user.getId();
         this.postId = post.getPostId();
         this.postContent = post.getPostContent();
         this.nickname = user.getNickname();

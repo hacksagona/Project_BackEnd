@@ -35,6 +35,11 @@ public class LikesController {
         return likeService.getLikeUsers(postId,userDetails);
     }
 
+    @GetMapping("/api/post/{postId}/isLiked")
+    public boolean isLiked(@PathVariable Long postId,@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return likeService.getIsLiked(postId, userDetails);
+    }
+
 
 }
 

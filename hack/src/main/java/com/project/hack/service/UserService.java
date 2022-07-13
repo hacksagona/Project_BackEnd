@@ -97,6 +97,7 @@ public class UserService {
         User user = userDetails.getUser();
         user.updateIsNewUser();
         userRepository.save(user);
+        System.out.println("isNewUser 수정 후 : " +user.isNewUser());
         return user.isNewUser();
     }
 }
