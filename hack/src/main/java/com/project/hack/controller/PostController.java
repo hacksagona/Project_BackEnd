@@ -46,6 +46,10 @@ public class PostController {
     return postService.getPosts();
     }
 
+    @GetMapping("/api/posts/mypost")
+    public List<PostResponseDto> getMyposts(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.getMyPosts(userDetails);}
+
     @PutMapping("/api/post/update/{postId}")
     public Long updatePost(@PathVariable Long postId,
                            @RequestBody PostRequestDto requestDto) {

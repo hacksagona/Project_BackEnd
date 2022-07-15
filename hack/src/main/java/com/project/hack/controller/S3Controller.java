@@ -19,7 +19,6 @@ import java.util.List;
 public class S3Controller {
     private final AwsService awsService;
     private final PhotoRepository photoRepository;
-    private final PhotoDto photoDto;
 
     @PostMapping("/images")
     public String upload(@RequestParam("images") List<MultipartFile> multipartFile) throws IOException {
@@ -35,23 +34,6 @@ public class S3Controller {
         return photoDtos;
     }
 
-    @PutMapping("/api/mypage/changeProfile")
-    public void updateProfilePic(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                     @RequestPart(value = "file") List<MultipartFile> multipartFile) throws Exception {
-
-        if(multipartFile == null) throw new NullPointerException("파일이 존재하지 않습니다");
-        User user = userDetails.getUser();
-        String url = user.getProfile_img();
-        String filename = photoRepository.findByUrl(url).orElseThrow(
-                () -> new NullPointerException("사진이 존재하지 않습니다")
-        ).getKey();
-        awsService.deleteFile(filename);
-        PhotoDto photoDtos = awsService.uploadFile(multipartFile);
-        String profile_img = photoDtos.getPath();
-
-        user.updateProfileImg(profile_img);
-//        return profileUrl;
-    }
 
 
 //    @PostMapping("/api/mypage")

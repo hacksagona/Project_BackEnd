@@ -42,6 +42,22 @@ public class PostService {
         return postList;
     }
 
+    public List<PostResponseDto> getMyPosts(UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
+
+        List<PostResponseDto> postList = new ArrayList<>();
+
+        List <Post> findPost = postRepository.findByUser(user);
+
+        for(Post post : findPost) {
+
+            int likes = postLikesRepository.findByPostId(post.getPostId()).size();
+            PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(),likes);
+            postList.add(postResponseDto);
+        }
+        return postList;
+    }
+
 
     @Transactional
     public Long update(Long postId, PostRequestDto requesteDto) {
@@ -86,4 +102,6 @@ public class PostService {
         }
         return postResponseDtos;
     }
+
+
 }

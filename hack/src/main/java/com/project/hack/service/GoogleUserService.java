@@ -176,7 +176,7 @@ public class GoogleUserService {
             String encodedPassword = passwordEncoder.encode(password);
             System.out.println("비밀번호 암호화  = " + encodedPassword);
 //            String profile_img = googleUserInfo.getProfile_img();
-            String profile_img = "https://play-lh.googleusercontent.com/38AGKCqmbjZ9OuWx4YjssAz3Y0DTWbiM5HB0ove1pNBq_o9mtWfGszjZNxZdwt_vgHo=w240-h480-rw";
+            String profile_img = "https://hacksagona.s3.ap-northeast-2.amazonaws.com/fa2f7508-e9da-4cb1-8a7f-54263633da93.png";
             System.out.println("프로필 넣음  = " + profile_img);
             String social = "google";
 

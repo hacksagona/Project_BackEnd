@@ -3,16 +3,22 @@ package com.project.hack.service;
 
 import com.project.hack.dto.request.SignupRequestDto;
 import com.project.hack.dto.request.UserRequestDto;
+import com.project.hack.dto.response.PhotoDto;
 import com.project.hack.exception.CustomException;
 import com.project.hack.exception.ErrorCode;
+import com.project.hack.model.Photo;
 import com.project.hack.model.User;
+import com.project.hack.repository.PhotoRepository;
 import com.project.hack.repository.UserRepository;
 import com.project.hack.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Objects;
 
 
 @RequiredArgsConstructor
@@ -21,6 +27,8 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final PhotoRepository photoRepository;
+    private final AwsService awsService;
 
     public void registerUser(SignupRequestDto requestDto) {
         // 회원 ID 중복 확인
@@ -99,5 +107,25 @@ public class UserService {
         userRepository.save(user);
         System.out.println("isNewUser 수정 후 : " +user.isNewUser());
         return user.isNewUser();
+    }
+
+    public void changeProfile(List<MultipartFile> multipartFile, UserDetailsImpl userDetails) {
+
+        if(multipartFile == null) throw new NullPointerException("파일이 존재하지 않습니다");
+        User user = userDetails.getUser();
+        String url = user.getProfile_img();
+        if (photoRepository.findByUrl(url).isPresent()) {
+            Photo photo = photoRepository.findByUrl(url).orElseThrow(
+                    () -> new NullPointerException("사진이 존재하지 않습니다")
+            );
+            String filename = photo.getKey();
+            awsService.deleteFile(filename);
+            photoRepository.delete(photo);
+        }
+        PhotoDto photoDto = awsService.uploadFile(multipartFile);
+        String profile_img = photoDto.getPath();
+
+        user.updateProfileImg(profile_img);
+        userRepository.save(user);
     }
 }
