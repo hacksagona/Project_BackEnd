@@ -154,8 +154,8 @@ public class GoogleUserService {
     private User registerGoogleUserIfNeeded(SocialUserInfoDto googleUserInfo) {
         // DB 에 중복된 구글 Id 가 있는지 확인
         System.out.println("구글유저확인 클래스 들어옴");
-        Long googleId = googleUserInfo.getId();
-        User googleUser = userRepository.findByGoogleId(googleId)
+        String googleEmail = googleUserInfo.getEmail();
+        User googleUser = userRepository.findByEmail(googleEmail)
                 .orElse(null);
         if (googleUser == null) {
             // 회원가입
@@ -178,16 +178,9 @@ public class GoogleUserService {
 //            String profile_img = googleUserInfo.getProfile_img();
             String profile_img = "https://play-lh.googleusercontent.com/38AGKCqmbjZ9OuWx4YjssAz3Y0DTWbiM5HB0ove1pNBq_o9mtWfGszjZNxZdwt_vgHo=w240-h480-rw";
             System.out.println("프로필 넣음  = " + profile_img);
+            String social = "google";
 
-            googleUser = User.builder()
-                    .name(name)
-                    .nickname(nickname)
-                    .email(email)
-                    .password(encodedPassword)
-                    .googleId(googleId)
-                    .profile_img(profile_img)
-                    .isNewUser(true)
-                    .build();
+            googleUser = new User(name, nickname,email, encodedPassword, profile_img,social);
             userRepository.save(googleUser);
         }
         System.out.println("구글 유저정보 넣음");

@@ -47,7 +47,7 @@ public class UserController {
         User user = userDetails.getUser();
         System.out.println("email : " + user.getEmail());
         System.out.println("nickname : " + user.getNickname());
-        return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img());
+        return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img(),user.isNewUser());
     }
 
     @GetMapping("/oauth/kakao/callback")

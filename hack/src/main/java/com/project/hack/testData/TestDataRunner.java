@@ -30,23 +30,27 @@ public class TestDataRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 // 테스트 User 생성
-        User testUser = new User("김준호 Kevin", "김준호님","kevinkim2413@naver.com", passwordEncoder.encode("123456"), 2322672142L, "https://play-lh.googleusercontent.com/38AGKCqmbjZ9OuWx4YjssAz3Y0DTWbiM5HB0ove1pNBq_o9mtWfGszjZNxZdwt_vgHo=w240-h480-rw");
-        testUser = userRepository.save(testUser);
-        User testUser2 = new User("Junho Kevin Kim", "구글로그인","junho2413@gmail.com", passwordEncoder.encode("123456"), 2324023036L, "https://play-lh.googleusercontent.com/38AGKCqmbjZ9OuWx4YjssAz3Y0DTWbiM5HB0ove1pNBq_o9mtWfGszjZNxZdwt_vgHo=w240-h480-rw");
-        testUser2 = userRepository.save(testUser2);
+        User testUser2 = new User("김준호 Kevin", "김준호님","kevinkim2413@naver.com", passwordEncoder.encode("123456"),"https://play-lh.googleusercontent.com/38AGKCqmbjZ9OuWx4YjssAz3Y0DTWbiM5HB0ove1pNBq_o9mtWfGszjZNxZdwt_vgHo=w240-h480-rw","kakao");
+        User googleUser = new User("Junho Kevin Kim", "구글로그인","junho2413@gmail.com", passwordEncoder.encode("123456"),"https://play-lh.googleusercontent.com/38AGKCqmbjZ9OuWx4YjssAz3Y0DTWbiM5HB0ove1pNBq_o9mtWfGszjZNxZdwt_vgHo=w240-h480-rw","google");
+        userRepository.save(testUser2);
+        userRepository.save(googleUser);
 
-        Post post1 = new Post("첫게시물", "카테고리", "https://hacksagona.s3.ap-northeast-2.amazonaws.com/06292782-56a0-41d9-9656-eda47bdcbbda.jpg",testUser);
-        Post post2 = new Post("두번째 게시물", "카테고리", "https://hacksagona.s3.ap-northeast-2.amazonaws.com/12795878-e839-478c-81ea-eedea55fecd1.PNG",testUser);
+        Post post1 = new Post("첫게시물", "카테고리", "https://hacksagona.s3.ap-northeast-2.amazonaws.com/06292782-56a0-41d9-9656-eda47bdcbbda.jpg",googleUser);
+        Post post2 = new Post("두번째 게시물", "카테고리", "https://hacksagona.s3.ap-northeast-2.amazonaws.com/12795878-e839-478c-81ea-eedea55fecd1.PNG",googleUser);
         Post post3 = new Post("세번째 게시물", "카테고리", "https://hacksagona.s3.ap-northeast-2.amazonaws.com/26d06be2-3caf-48a8-aec2-faa061cd769c.jpg",testUser2);
         Post post4 = new Post("네번째 게시물", "카테고리", "https://hacksagona.s3.ap-northeast-2.amazonaws.com/06292782-56a0-41d9-9656-eda47bdcbbda.jpg",testUser2);
-        Post post5 = new Post("네번째 게시물", "카테고리", "https://hacksagona.s3.ap-northeast-2.amazonaws.com/06292782-56a0-41d9-9656-eda47bdcbbda.jpg",testUser2);
-        Post post6 = new Post("네번째 게시물", "카테고리", "https://hacksagona.s3.ap-northeast-2.amazonaws.com/06292782-56a0-41d9-9656-eda47bdcbbda.jpg",testUser2);
         postRepository.save(post1);
         postRepository.save(post2);
         postRepository.save(post3);
         postRepository.save(post4);
-        postRepository.save(post5);
-        postRepository.save(post6);
+
+        int N = 10;
+        ArrayList<Post> postArrayList = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            Post postpost = new Post("네번째 게시물", "카테고리", "https://hacksagona.s3.ap-northeast-2.amazonaws.com/06292782-56a0-41d9-9656-eda47bdcbbda.jpg",testUser2);
+            postRepository.save(postpost);
+            postArrayList.add(postpost);
+        }
 
 // 테스트 User 의 관심상품 등록
 // 검색어 당 관심상품 10개 등록

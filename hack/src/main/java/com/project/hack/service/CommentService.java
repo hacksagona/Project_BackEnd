@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,7 +40,7 @@ public class CommentService {
         if(commentRequestDto.getComment().equals("")){
             throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
         }
-        if (userDetails.getUser().getName().equals(comment.getName())){
+        if (userDetails.getUser().getName().equals(comment.getUser().getName())){
             comment.updateComment(commentRequestDto,userDetails);
             commentRepository.save(comment);
         }
@@ -49,16 +50,21 @@ public class CommentService {
 
     public ResponseEntity deleteComment(Long commentId, UserDetailsImpl userDetails) {
         Comment comment = commentRepository.findByCommentId(commentId);
-        if(userDetails.getUser().getId().equals(comment.getUserId())){
+        if(userDetails.getUser().getId().equals(comment.getUser().getId())){
             commentRepository.delete(comment);
             return new ResponseEntity("삭제 완료", HttpStatus.OK);
         }
         throw new CustomException(ErrorCode.INVALID_AUTHORITY);
     }
 
-    public List<Comment> getComment(Long postId) {
+    public List<CommentResponseDto> getComment(Long postId) {
+        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
         List<Comment> commentList = postRepository.findById(postId).get().getComments();
-        return commentList;
+        for(Comment comment :commentList){
+            CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
+            commentResponseDtoList.add(commentResponseDto);
+        }
+        return commentResponseDtoList;
 
     }
 }

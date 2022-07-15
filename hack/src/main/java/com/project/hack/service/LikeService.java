@@ -40,6 +40,7 @@ public class LikeService {
     }
 
     public List<UserResponseDto> getLikeUsers(Long postId, UserDetailsImpl userDetails) {
+        System.out.println("좋아요 누른사람들 정보 얻기 api 작동");
         List<PostLikes> postLikesList = postLikesRepository.findByPostId(postId);
         List<UserResponseDto> users = new ArrayList<>();
         for(PostLikes postLikes : postLikesList){
@@ -52,7 +53,7 @@ public class LikeService {
                     .build();
             users.add(responseDto);
         }
-
+        System.out.println("좋아요 누른 사람들 정보 : " +users);
         return users;
 
 
