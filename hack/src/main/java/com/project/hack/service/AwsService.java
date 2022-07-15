@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.project.hack.dto.response.PhotoDto;
+import com.project.hack.model.Photo;
+import com.project.hack.repository.PhotoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,7 @@ public class AwsService {
     private String bucket;
     private final AmazonS3Client amazonS3Client;
     private final AmazonS3 amazonS3;
+    private final PhotoRepository photoRepository;
 
 
     public PhotoDto uploadFile(List<MultipartFile> multipartFile) {
@@ -50,6 +53,10 @@ public class AwsService {
                     .path(amazonS3.getUrl(bucket, fileName).toString())
                     .build();
             photoDtos.add(photoDto);
+
+            Photo photo = new Photo(photoDto);
+            photoRepository.save(photo);
+
         });
         return photoDtos.get(0);
     }
@@ -66,4 +73,11 @@ public class AwsService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다.");
         }
     }
+
+    // s3에서 파일 삭제
+    public String deleteFile(String fileName) {
+        amazonS3.deleteObject(bucket, fileName);
+        return fileName + " removed ...";
+    }
+
 }
