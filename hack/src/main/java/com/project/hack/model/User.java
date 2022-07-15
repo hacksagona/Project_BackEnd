@@ -75,4 +75,8 @@ public class User {
         this.nickname = userRequestDto.getNickname();
         this.profile_img = userRequestDto.getProfile_img();
     }
+
+    public void updateProfileImg(String profile_img) {
+        this.profile_img = profile_img;
+    }
 }
