@@ -25,6 +25,8 @@ public class PostResponseDto {
 
     private String postContent;
 
+    private Long userId;
+
 
     private String nickname;
     private String photoUrl;
@@ -36,14 +38,28 @@ public class PostResponseDto {
     private String profile_img;
 
 
-    private String like;
-
+    private int likes;
 
     private String category;
 
     private List<Comment> commentList;
 
-    public PostResponseDto(Post post, User user) {
+    public PostResponseDto(Post post, int likes) {
+        this.userId = post.getUser().getId();
+        this.postId = post.getPostId();
+        this.postContent = post.getPostContent();
+        this.nickname = post.getUser().getNickname();
+        this.email = post.getUser().getEmail();
+        this.profile_img = post.getUser().getProfile_img();
+        this.category = post.getCategory();
+        this.modifiedAt = post.getModifiedAt();
+        this.createdAt = post.getCreatedAt();
+        this.photoUrl = post.getPhotoUrl();
+        this.likes = likes;
+        this.commentList = post.getComments();
+    }
+    public PostResponseDto(Post post, User user, int likes) {
+        this.userId = user.getId();
         this.postId = post.getPostId();
         this.postContent = post.getPostContent();
         this.nickname = user.getNickname();
@@ -53,11 +69,10 @@ public class PostResponseDto {
         this.modifiedAt = post.getModifiedAt();
         this.createdAt = post.getCreatedAt();
         this.photoUrl = post.getPhotoUrl();
-        this.commentList = post.getComments();
+        this.likes = likes;
     }
 
-    //”modifiedAt” :
-    //”createdAt”:
+
 
 
 

@@ -1,13 +1,16 @@
 package com.project.hack.controller;
 
 
+import com.project.hack.dto.response.UserResponseDto;
 import com.project.hack.model.PostLikes;
 import com.project.hack.model.User;
 import com.project.hack.repository.PostLikesRepository;
 import com.project.hack.repository.UserRepository;
 import com.project.hack.security.UserDetailsImpl;
+import com.project.hack.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,27 +21,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LikesController {
     private final UserRepository userRepository;
+    private final LikeService likeService;
     private final PostLikesRepository postLikesRepository;
 
-    @PostMapping("/api/post/{postId}/likes")
+    @PostMapping("/api/post/{postId}/like")
     public int addLikes (@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         User user = userDetails.getUser();
-        if(user ==null){
-            throw new IllegalArgumentException("유저가 없음");
-        }
-        if(postLikesRepository.findByUserIdAndPostId(user.getId(),postId).isPresent()){
-            PostLikes postLikes = postLikesRepository.findByUserIdAndPostId(user.getId(),postId).orElseThrow(()-> new IllegalArgumentException("해당 좋아요 없음"));
-            postLikesRepository.delete(postLikes);
-        }else{
-            PostLikes postLikes = new PostLikes(postId,user);
-            postLikesRepository.save(postLikes);
-        }
-        int count = 0;
+        return likeService.addLikes(user,postId);
+    }
 
-        List<PostLikes> postLikesList= postLikesRepository.findByPostId(postId);
-        count = postLikesList.size();
+    @GetMapping("/api/post/{postId}/likeUser")
+    public List<UserResponseDto> getLikeUsers(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return likeService.getLikeUsers(postId,userDetails);
+    }
 
-        return count;
+    @GetMapping("/api/post/{postId}/isLiked")
+    public boolean isLiked(@PathVariable Long postId,@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return likeService.getIsLiked(postId, userDetails);
     }
 
 

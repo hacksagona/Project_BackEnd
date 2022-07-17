@@ -139,8 +139,8 @@ public class KakaoUserService {
     private User registerKakaoUserIfNeeded(SocialUserInfoDto kakaoUserInfo) {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         System.out.println("카톡유저확인 클래스 들어옴===================");
-        Long kakaoId = kakaoUserInfo.getId();
-        User kakaoUser = userRepository.findByKakaoId(kakaoId)
+        String kakaoEmail = kakaoUserInfo.getEmail();
+        User kakaoUser = userRepository.findByEmail(kakaoEmail)
                 .orElse(null);
         if (kakaoUser == null) {
             // 회원가입
@@ -161,10 +161,11 @@ public class KakaoUserService {
             String encodedPassword = passwordEncoder.encode(password);
             System.out.println("비밀번호 암호화  = " + encodedPassword);
 //            String profile_img = kakaoUserInfo.getProfile_img();
-            String profile_img = "https://play-lh.googleusercontent.com/38AGKCqmbjZ9OuWx4YjssAz3Y0DTWbiM5HB0ove1pNBq_o9mtWfGszjZNxZdwt_vgHo=w240-h480-rw";
+            String profile_img = "https://hacksagona.s3.ap-northeast-2.amazonaws.com/fa2f7508-e9da-4cb1-8a7f-54263633da93.png";
             System.out.println("프로필 넣음  = " + profile_img);
+            String social = "kakao";
 
-            kakaoUser = new User(name, nickname,email, encodedPassword, kakaoId, profile_img);
+            kakaoUser = new User(name, nickname,email, encodedPassword, profile_img,social);
             userRepository.save(kakaoUser);
         }
         System.out.println("카카오톡 유저정보 넣음");

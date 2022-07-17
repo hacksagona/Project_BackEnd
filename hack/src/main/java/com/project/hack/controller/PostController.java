@@ -3,6 +3,7 @@ package com.project.hack.controller;
 import com.project.hack.dto.request.PostRequestDto;
 import com.project.hack.dto.response.PostResponseDto;
 import com.project.hack.model.Post;
+import com.project.hack.model.User;
 import com.project.hack.repository.PostRepository;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.PostService;
@@ -41,9 +42,13 @@ public class PostController {
 
     //게시글 불러오기
     @GetMapping("/api/posts")
-    public List<Post> getPosts() {
+    public List<PostResponseDto> getPosts() {
     return postService.getPosts();
     }
+
+    @GetMapping("/api/posts/mypost")
+    public List<PostResponseDto> getMyposts(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.getMyPosts(userDetails);}
 
     @PutMapping("/api/post/update/{postId}")
     public Long updatePost(@PathVariable Long postId,
@@ -58,4 +63,11 @@ public class PostController {
         postRepository.deleteById(postId);
         return postId;
     }
+
+    @GetMapping("/api/posts/goalShot")
+    public List<PostResponseDto> getGoalShotPost(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        User user = userDetails.getUser();
+        return postService.getGoalShotPost(user);
+    }
+
 }

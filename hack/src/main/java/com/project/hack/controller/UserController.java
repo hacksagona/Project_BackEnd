@@ -3,6 +3,7 @@ package com.project.hack.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.hack.dto.request.SignupRequestDto;
 import com.project.hack.dto.request.UserRequestDto;
+import com.project.hack.dto.response.PhotoDto;
 import com.project.hack.dto.response.UserResponseDto;
 import com.project.hack.exception.CustomException;
 import com.project.hack.exception.ErrorCode;
@@ -17,8 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,9 +50,9 @@ public class UserController {
         User user = userDetails.getUser();
         System.out.println("email : " + user.getEmail());
         System.out.println("nickname : " + user.getNickname());
-        return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img());
+        return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img(),user.isNewUser());
     }
-
+//===========================소셜로그인======================
     @GetMapping("/oauth/kakao/callback")
     public UserResponseDto kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 
@@ -73,13 +76,21 @@ public class UserController {
             throw new CustomException(ErrorCode.INVALID_LOGIN_ATTEMPT);
         }
     }
-
+    //=============================유저 정보 수정 =============
     @PutMapping("/user/update/nickname")
     public Long loginNickname(@RequestBody UserRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         System.out.println("닉넴 수정 시도");
         return userService.putNickname(requestDto,userDetails).getId();
 
     }
+
+    @PutMapping("/api/mypage/changeProfile")
+    public void updateProfilePic(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                 @RequestPart(value = "file") List<MultipartFile> multipartFile) throws Exception {
+
+        userService.changeProfile(multipartFile,userDetails);
+    }
+//======================유저정보 확인 ========================
     @PutMapping("/user/update/isNewUser")
     public boolean updateIsNewUser(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return !userService.updateIsNewUser(userDetails);
@@ -119,13 +130,5 @@ public class UserController {
                  () -> new IllegalArgumentException("유저가 존재하지 않습니다")
          );
     }
-
-
-
-
-
-
-
-
 
 }

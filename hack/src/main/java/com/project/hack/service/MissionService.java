@@ -47,6 +47,7 @@ public class MissionService {
     @Transactional//=>수정하는 도중 다른 유저들의 접근에 대한 에러 방지용
     public Long editMission(MissionRequestDto missionRequestDto, Long missionId) {
         Mission mission = missionRepository.findByMissionId(missionId);
+        System.out.println("삭제 시도하는 미션 : " + mission);
         mission.fixMission(missionRequestDto);
         return mission.getMissionId();
     }
@@ -54,6 +55,7 @@ public class MissionService {
     //목표 삭제
     @Transactional
     public Long deleteMission(Long missionId) {
+        System.out.println("삭제 시도하는 미션 : " + missionRepository.findByMissionId(missionId));
         missionRepository.deleteById(missionId);
         return missionId;
     }

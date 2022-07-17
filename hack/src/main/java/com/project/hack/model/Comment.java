@@ -21,20 +21,13 @@ public class Comment extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
-    @Column(nullable = false)
-    private Long userId;
-
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String nickname;
-
-    @Column
-    private String profile_img;
-
     @Column (nullable = false)
     private String comment;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "User_ID")
+    private User user;
 
     @JsonBackReference
     @ManyToOne
@@ -43,16 +36,13 @@ public class Comment extends Timestamped {
 
 
     public Comment(CommentRequestDto commentRequestDto, UserDetailsImpl userDetails,Post post) {
-        this.userId = userDetails.getUser().getId();
         this.comment = commentRequestDto.getComment();
-        this.nickname=userDetails.getUser().getNickname();
-        this.name = userDetails.getUser().getName();
         this.post = post;
-        this.profile_img = userDetails.getUser().getProfile_img();
+        this.user = userDetails.getUser();
     }
 
     public void updateComment(CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
-        this.nickname = userDetails.getUser().getNickname();
+        this.user = userDetails.getUser();
         this.comment = commentRequestDto.getComment();
     }
 }

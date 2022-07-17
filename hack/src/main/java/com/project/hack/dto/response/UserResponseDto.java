@@ -7,7 +7,6 @@ import lombok.*;
 @Setter
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserResponseDto {
     private String email;
     private String name;
@@ -36,11 +35,12 @@ public class UserResponseDto {
         this.nickname = nickname;
     }
 
-    public UserResponseDto(String email, String name, Long userId, String nickname, String profile_img) {
+    public UserResponseDto(String email, String name, Long userId, String nickname, String profile_img, boolean isNewUser) {
         this.email = email;
         this.name = name;
         this.userId = userId;
         this.nickname = nickname;
         this.profile_img = profile_img;
+        this.isNewUser = isNewUser;
     }
 }

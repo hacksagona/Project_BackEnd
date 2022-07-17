@@ -38,11 +38,8 @@ public class User {
     @Column(unique = true)
     private String nickname;
 
-    @Column(unique = true)
-    private Long kakaoId;
-
-    @Column(unique = true)
-    private Long googleId;
+    @Column(nullable = false)
+    private String social;
 
     @Column(nullable = false)
     private boolean isNewUser;
@@ -51,15 +48,19 @@ public class User {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Post> posts;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Comment> comments;
 
-    public User(String name, String nickname,String email, String encodedPassword, Long kakaoId, String profile_img) {
+
+    public User(String name, String nickname,String email, String encodedPassword,String profile_img, String social) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
         this.password = encodedPassword;
-        this.kakaoId= kakaoId;
         this.profile_img = profile_img;
         this.isNewUser = true;
+        this.social = social;
     }
 
     public void updateNickname(String nickname){
@@ -73,5 +74,9 @@ public class User {
         this.id = userId;
         this.nickname = userRequestDto.getNickname();
         this.profile_img = userRequestDto.getProfile_img();
+    }
+
+    public void updateProfileImg(String profile_img) {
+        this.profile_img = profile_img;
     }
 }

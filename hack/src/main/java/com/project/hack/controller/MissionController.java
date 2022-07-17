@@ -63,7 +63,7 @@ public class MissionController {
     //목표 수정
     @PutMapping("/api/category/missions/{missionId}")
     public Long editMission(@RequestBody MissionRequestDto missionRequestDto, @PathVariable Long missionId) {
-
+        System.out.println("미션 수정 시도");
         return missionService.editMission(missionRequestDto, missionId);
     }
 
@@ -77,7 +77,7 @@ public class MissionController {
     //목표 삭제
     @DeleteMapping("/api/category/missions/{missionId}")
     public Long deleteMission(@PathVariable Long missionId) {
-
+        System.out.println("미션 삭제 시도");
         return missionService.deleteMission(missionId);
     }
 

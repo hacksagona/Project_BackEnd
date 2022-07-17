@@ -1,6 +1,7 @@
 package com.project.hack.controller;
 
 import com.project.hack.dto.request.CommentRequestDto;
+import com.project.hack.dto.response.CommentResponseDto;
 import com.project.hack.exception.CustomException;
 import com.project.hack.exception.ErrorCode;
 import com.project.hack.model.Comment;
@@ -39,7 +40,7 @@ public class CommentController {
     }
 
     @GetMapping("/api/post/{postId}/comment")
-    public List<Comment> getComment(@PathVariable Long postId){
+    public List<CommentResponseDto> getComment(@PathVariable Long postId){
         return commentService.getComment(postId);
     }
 }

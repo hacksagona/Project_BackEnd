@@ -17,13 +17,14 @@ import java.time.temporal.ChronoUnit;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentResponseDto {
+    private Long userId;
+    private LocalDateTime createdAt;
     private Long postId;
     private Long commentId;
     private String nickname;
     private String name;
     private String comment;
     private String profile_img;
-    private String calculatedTime;
 
 
     public CommentResponseDto(Comment comment, User user) {
@@ -31,17 +32,19 @@ public class CommentResponseDto {
         this.nickname = user.getNickname();
         this.name = user.getName();
         this.comment = comment.getComment();
-        this.calculatedTime = getCalculatedTime();
+        this.createdAt = comment.getCreatedAt();
+        this.userId = user.getId();
     }
 
     public CommentResponseDto(Comment comment) {
-            this.commentId = comment.getCommentId();
-            this.comment = comment.getComment();
-            this.name = comment.getName();
-            this.nickname=comment.getNickname();
-            this.calculatedTime = calculatedTime(comment);
-            this.profile_img = comment.getProfile_img();
-            this.postId = comment.getPost().getPostId();
+        this.commentId = comment.getCommentId();
+        this.comment = comment.getComment();
+        this.name = comment.getUser().getName();
+        this.nickname = comment.getUser().getNickname();
+        this.profile_img = comment.getUser().getProfile_img();
+        this.postId = comment.getPost().getPostId();
+        this.createdAt = comment.getCreatedAt();
+        this.userId = comment.getUser().getId();
     }
 
         public static String calculatedTime(Comment comment){
