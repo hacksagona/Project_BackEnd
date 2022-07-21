@@ -111,6 +111,9 @@ public class UserService {
 
     public void changeProfile(List<MultipartFile> multipartFile, UserDetailsImpl userDetails) {
 
+        System.out.println("프사 수정 시도");
+        System.out.println("들어온 사진 : " + multipartFile);
+
         if(multipartFile == null) throw new NullPointerException("파일이 존재하지 않습니다");
         User user = userDetails.getUser();
         String url = user.getProfile_img();
@@ -118,14 +121,15 @@ public class UserService {
             Photo photo = photoRepository.findByUrl(url).orElseThrow(
                     () -> new NullPointerException("사진이 존재하지 않습니다")
             );
-            String filename = photo.getKey();
+            String filename = photo.getKey1();
             awsService.deleteFile(filename);
             photoRepository.delete(photo);
         }
         PhotoDto photoDto = awsService.uploadFile(multipartFile);
         String profile_img = photoDto.getPath();
-
+        System.out.println("프사 : " + profile_img);
         user.updateProfileImg(profile_img);
         userRepository.save(user);
+        System.out.println("프사 수정후 저장성공");
     }
 }

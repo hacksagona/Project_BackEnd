@@ -12,6 +12,7 @@ import com.project.hack.repository.UserRepository;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.GoogleUserService;
 import com.project.hack.service.KakaoUserService;
+import com.project.hack.service.NaverUserService;
 import com.project.hack.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,7 @@ public class UserController {
 
     private final KakaoUserService kakaoUserService;
     private final GoogleUserService googleUserService;
+    private final NaverUserService naverUserService;
 
 
 
@@ -76,6 +78,20 @@ public class UserController {
             throw new CustomException(ErrorCode.INVALID_LOGIN_ATTEMPT);
         }
     }
+
+    @GetMapping("/oauth/naver/callback")
+    public UserResponseDto naverLogin(@RequestParam(name = "code") String code, HttpServletResponse response,@RequestParam(name = "state") String state) throws JsonProcessingException {
+
+        try { // 회원가입 진행 성공시 true
+            System.out.println("네이버 로그인 시도");
+            System.out.println("state : " +state);
+            return naverUserService.naverLogin(code, response,state);
+        }catch (Exception e){ // 에러나면 false
+            System.out.println("네이버 로그인 성공 못함!");
+            throw new CustomException(ErrorCode.INVALID_LOGIN_ATTEMPT);
+        }
+    }
+
     //=============================유저 정보 수정 =============
     @PutMapping("/user/update/nickname")
     public Long loginNickname(@RequestBody UserRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){

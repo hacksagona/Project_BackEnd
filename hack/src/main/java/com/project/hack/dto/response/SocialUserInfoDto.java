@@ -8,7 +8,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class SocialUserInfoDto {
-    private Long id;
     private String social;
     private String nickname;
     private String profile_img;

@@ -5,11 +5,14 @@ import com.project.hack.dto.response.PhotoDto;
 import com.project.hack.dto.response.PostResponseDto;
 import com.project.hack.model.Mission;
 import com.project.hack.model.Post;
-import com.project.hack.model.PostDontLikes;
 import com.project.hack.model.User;
 import com.project.hack.repository.*;
 import com.project.hack.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,10 +31,14 @@ public class PostService {
     private final MissionRepository missionRepository;
     private final AwsService awsService;
 
-    public List<PostResponseDto> getPosts() {
-        List<PostResponseDto> postList = new ArrayList<>();
+    public List<PostResponseDto> getPosts(int page, int size, String sortBy, boolean isAsc) {
 
-        List <Post> findPost = postRepository.findAll();
+        Sort.Direction direction = isAsc? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Post> findPost = postRepository.findAll(pageable);
+        List<PostResponseDto> postList = new ArrayList<>();
 
         for(Post post : findPost) {
 

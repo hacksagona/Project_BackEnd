@@ -8,6 +8,7 @@ import com.project.hack.repository.PostRepository;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,8 +43,13 @@ public class PostController {
 
     //게시글 불러오기
     @GetMapping("/api/posts")
-    public List<PostResponseDto> getPosts() {
-    return postService.getPosts();
+    public List<PostResponseDto> getPosts(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sortBy") String sortBy,
+            @RequestParam("isAsc") boolean isAsc
+    ) {
+    return postService.getPosts(page, size,sortBy, isAsc);
     }
 
     @GetMapping("/api/posts/mypost")

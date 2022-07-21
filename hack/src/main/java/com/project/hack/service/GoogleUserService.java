@@ -43,6 +43,9 @@ public class GoogleUserService {
     @Value("${auth.google.redirect-uri}")
     private String googleRedirectUri;
 
+    @Value("${cloud.aws.s3.profileimg}")
+    private String profileImg;
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     // 구글 로그인
@@ -143,7 +146,6 @@ public class GoogleUserService {
         System.out.println("프로필이미지 URL : " + profile_img);
 
         return SocialUserInfoDto.builder()
-                .id(id)
                 .social("Google")
                 .email(email)
                 .nickname(nickname)
@@ -176,7 +178,7 @@ public class GoogleUserService {
             String encodedPassword = passwordEncoder.encode(password);
             System.out.println("비밀번호 암호화  = " + encodedPassword);
 //            String profile_img = googleUserInfo.getProfile_img();
-            String profile_img = "https://hacksagona.s3.ap-northeast-2.amazonaws.com/fa2f7508-e9da-4cb1-8a7f-54263633da93.png";
+            String profile_img = profileImg;
             System.out.println("프로필 넣음  = " + profile_img);
             String social = "google";
 

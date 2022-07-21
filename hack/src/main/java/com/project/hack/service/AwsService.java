@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hack.dto.response.PhotoDto;
 import com.project.hack.model.Photo;
 import com.project.hack.repository.PhotoRepository;
@@ -18,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,21 +36,24 @@ public class AwsService {
 
 
     public PhotoDto uploadFile(List<MultipartFile> multipartFile) {
+        System.out.println("s3에 사진 업로드 시도");
         List<PhotoDto> photoDtos = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
         multipartFile.forEach(file -> {
             String fileName = createFileName(file.getOriginalFilename());
+            System.out.println("fileName : " + fileName);
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(file.getSize());
             objectMetadata.setContentType(file.getContentType());
-
+            System.out.println("옵젝메타데이터 성공");
             try(InputStream inputStream = file.getInputStream()) {
                 amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
             } catch(IOException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
             }
-
+            System.out.println("트라이 캐치 넘어감");
             PhotoDto photoDto = PhotoDto.builder()
                     .key(fileName)
                     .path(amazonS3.getUrl(bucket, fileName).toString())
@@ -58,6 +64,7 @@ public class AwsService {
             photoRepository.save(photo);
 
         });
+        System.out.println("s3에 업로드 성공");
         return photoDtos.get(0);
     }
 
