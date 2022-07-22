@@ -15,6 +15,7 @@ public enum ErrorCode {
     /* 403 FORBIDDEN : 권한이 없는 사용자 */
     INVALID_AUTHORITY(HttpStatus.FORBIDDEN,"권한이 없는 사용자 입니다"),
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
+    CHATMESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 채팅 정보를 찾을 수 없습니다"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
     MISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 목표를 찾을 수 없습니다"),
     NICKNAME_NOT_FOUND(HttpStatus.NOT_FOUND, "닉네임은 null이나 빈칸일수 없습니다"),

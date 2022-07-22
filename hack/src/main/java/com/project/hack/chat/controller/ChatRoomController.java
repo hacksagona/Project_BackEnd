@@ -42,13 +42,13 @@ public class ChatRoomController {
 
     //해당 채팅방 채팅내용 반환
 
-//    @GetMapping("/roomlist/{userId}/chatRoom/{chatRoomId}")
-//    @ResponseBody
-//    public ChatRoomResponseDto.ChatMessageListData roomChatList(@PathVariable Long userId, @PathVariable Long chatRoomId,
-//                                                                @RequestParam(value = "time",required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)LocalDateTime localDateTime,
-//                                                                @AuthenticationPrincipal UserDetailsImpl userDetails){
-//        tokenValidator.userIdCompareToken(userId,userDetails.getUser().getId());
-//        return chatRoomService.roomChatListService(userId, chatRoomId, localDateTime);
-//
-//    }
+    @GetMapping("/roomlist/{userId}/chatRoom/{chatRoomId}")
+    @ResponseBody
+    public ChatRoomResponseDto.ChatMessageListData roomChatList(@PathVariable Long userId, @PathVariable Long chatRoomId,
+                                                                @RequestParam(value = "time",required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)LocalDateTime localDateTime,
+                                                                @AuthenticationPrincipal UserDetailsImpl userDetails){
+        tokenValidator.userIdCompareToken(userId,userDetails.getUser().getId());
+        return chatRoomService.roomChatListService(userId, chatRoomId, localDateTime);
+
+    }
 }

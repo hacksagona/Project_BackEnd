@@ -12,8 +12,8 @@ import java.util.Optional;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     ChatRoom findByBuyerAndSeller(User buyer, User seller);
 
-//    @Query(nativeQuery = true, value = "select * from chat_room cr where cr.buyerid=:userId or cr.sellerid=:userId ORDER BY cr.modified_at desc")
-//    List<ChatRoom> findAllByUserId(@Param("userId") Long userId);
+    @Query(nativeQuery = true, value = "select * from chat_room cr where cr.buyerid=:userId or cr.sellerid=:userId ORDER BY cr.modified_at desc")
+    List<ChatRoom> findAllByUserId(@Param("userId") Long userId);
 
 }
 
