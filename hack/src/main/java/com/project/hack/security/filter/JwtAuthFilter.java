@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Enumeration;
 
 /**
  * Token 을 내려주는 Filter 가 아닌  client 에서 받아지는 Token 을 서버 사이드에서 검증하는 클레스 SecurityContextHolder 보관소에 해당
@@ -40,10 +41,14 @@ public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
 
         // JWT 값을 담아주는 변수 TokenPayload
         String tokenPayload = request.getHeader("Authorization");
+        Enumeration<String> data = request.getHeaderNames();
         //해더에 토큰 페이로드 들어가는지 확인
+//        while (data.hasMoreElements()){
+//            System.out.println("해더에 들어오는 이름들 : " + data.nextElement());
+//        }
         System.out.println("request Authorization header : " + tokenPayload + " / " + (tokenPayload == null?"null 토큰.":"값이 존재하는 토큰."));
         if (tokenPayload == null) {
-            response.sendError(400, "유효하지 않은 토큰입니다.");
+            response.sendError(400, "토큰 정보가 없습니다.");
             return null;
         }
 

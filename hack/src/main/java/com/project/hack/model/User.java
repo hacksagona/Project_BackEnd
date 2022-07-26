@@ -44,6 +44,9 @@ public class User {
     @Column(nullable = false)
     private boolean isNewUser;
 
+    @Column(nullable = false)
+    private boolean isTutorial;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Post> posts;
@@ -60,6 +63,7 @@ public class User {
         this.password = encodedPassword;
         this.profile_img = profile_img;
         this.isNewUser = true;
+        this.isTutorial = false;
         this.social = social;
     }
 
@@ -67,6 +71,7 @@ public class User {
         this.nickname = nickname;
     }
     public void updateIsNewUser(){this.isNewUser = false;}
+    public void updateIsTutorial(){this.isTutorial = true;}
 
 
     // 마이페이지 업데이트

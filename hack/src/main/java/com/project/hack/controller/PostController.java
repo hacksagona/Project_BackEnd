@@ -69,11 +69,18 @@ public class PostController {
         postRepository.deleteById(postId);
         return postId;
     }
-
+    // =============== 골샷 ====================
     @GetMapping("/api/posts/goalShot")
     public List<PostResponseDto> getGoalShotPost(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        System.out.println("골샷 조회");
         User user = userDetails.getUser();
         return postService.getGoalShotPost(user);
     }
 
+    @GetMapping("/api/posts/todayLikes")
+    public List<PostResponseDto> getTodayLikes(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        System.out.println("오늘 좋아요 누른 게시물 조회");
+        User user = userDetails.getUser();
+        return postService.getTodayLikes(user);
+    }
 }

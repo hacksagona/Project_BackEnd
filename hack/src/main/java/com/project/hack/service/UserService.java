@@ -109,6 +109,14 @@ public class UserService {
         return user.isNewUser();
     }
 
+    public boolean updateIsTutorial(UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
+        user.updateIsTutorial();
+        userRepository.save(user);
+        System.out.println("isTutorial 수정 후 : " +user.isTutorial());
+        return user.isTutorial();
+    }
+
     public void changeProfile(List<MultipartFile> multipartFile, UserDetailsImpl userDetails) {
 
         System.out.println("프사 수정 시도");

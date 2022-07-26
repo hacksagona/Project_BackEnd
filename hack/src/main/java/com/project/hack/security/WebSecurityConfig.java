@@ -61,12 +61,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic().disable()
+        http
+//                .httpBasic().disable()
                 .csrf()
                 .disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll() // preflight 대응
-                .antMatchers("/auth/**").permitAll(); // /auth/**에 대한 접근을 인증 절차 없이 허용(로그인 관련 url)
+                .antMatchers("/auth/**").permitAll()         // /auth/**에 대한 접근을 인증 절차 없이 허용(로그인 관련 url)
+                .antMatchers("/ws-stomp/**").permitAll()
+                .antMatchers("/templates/chat/message").permitAll()
+                .antMatchers("/templates/**").permitAll()
+                .antMatchers("/sub/**").permitAll()
+                .antMatchers("/pup/**").permitAll()
+                .antMatchers("**/pup/**").permitAll()
+                .antMatchers("**/sub/**").permitAll();
+        // stomp 관련 허용
         // 특정 권한을 가진 사용자만 접근을 허용해야 할 경우, 하기 항목을 통해 가능
 
         http
@@ -76,6 +85,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         http.headers().frameOptions().sameOrigin();
         /*
          * 1.
@@ -148,6 +158,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         skipPathList.add("GET,/basic.js");
 
         skipPathList.add("GET,/favicon.ico");
+        // Stomp 관련
+        skipPathList.add("GET,**/pub/chat/room/**");
+        skipPathList.add("GET,**/sub/chat/room/**");
+        skipPathList.add("GET,/ws-stomp/**");
+        skipPathList.add("POST,/ws-stomp/**");
+        skipPathList.add("GET,/sub/chat/room/**");
+        skipPathList.add("GET,/pub/chat/message");
+        skipPathList.add("GET,/pub/templates/**");
+        skipPathList.add("GET,/ws-stomp/pub/chat/room/**");
 
         FilterSkipMatcher matcher = new FilterSkipMatcher(
                 skipPathList,

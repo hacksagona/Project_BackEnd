@@ -63,6 +63,7 @@ public class KakaoUserService {
         return UserResponseDto.builder()
                 .userId(kakaoUser.getId())
                 .isNewUser(kakaoUser.isNewUser())
+                .isTutorial(kakaoUser.isTutorial())
                 .email(kakaoUser.getEmail())
                 .profile_img(kakaoUser.getProfile_img()).build();
     }
@@ -133,7 +134,7 @@ public class KakaoUserService {
         System.out.println("카카오 사용자 정보: " + id + ", " + nickname + ","+profile_img+", "+ email);
         return SocialUserInfoDto.builder()
                 .social("Kakao")
-                .email(email)
+                .email(email+"_forKakao")
                 .nickname(nickname)
                 .profile_img(profile_img).build();
     }
@@ -142,10 +143,11 @@ public class KakaoUserService {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         System.out.println("카톡유저확인 클래스 들어옴===================");
         String kakaoEmail = kakaoUserInfo.getEmail();
-        User kakaoUser = userRepository.findByEmail(kakaoEmail)
+        User kakaoUser = userRepository.findByEmailAndSocial(kakaoEmail,kakaoUserInfo.getSocial())
                 .orElse(null);
         if (kakaoUser == null) {
             // 회원가입
+            System.out.println("회원정보 없는 회원임(새로운 회원!)");
             // username: kakao nickname
             String name = kakaoUserInfo.getNickname();
             System.out.println("닉네임 넣음 = " + name);
@@ -167,7 +169,7 @@ public class KakaoUserService {
             System.out.println("프로필 넣음  = " + profile_img);
             String social = "kakao";
 
-            kakaoUser = new User(name, nickname,email, encodedPassword, profile_img,social);
+            kakaoUser = new User(name, nickname,email+"_forKakao", encodedPassword, profile_img,social);
             userRepository.save(kakaoUser);
         }
         System.out.println("카카오톡 유저정보 넣음");

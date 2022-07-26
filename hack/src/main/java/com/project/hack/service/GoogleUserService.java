@@ -67,6 +67,7 @@ public class GoogleUserService {
         return UserResponseDto.builder()
                 .userId(googleUser.getId())
                 .isNewUser(googleUser.isNewUser())
+                .isTutorial(googleUser.isTutorial())
                 .email(googleUser.getEmail())
                 .profile_img(googleUser.getProfile_img()).build();
     }
@@ -134,7 +135,7 @@ public class GoogleUserService {
         JsonNode googleUserInfo = objectMapper.readTree(responseBody);
 
         // 유저정보 작성
-        Long id = googleUserInfo.get("sub").asLong();
+        String id = googleUserInfo.get("sub").asText();
         String email = googleUserInfo.get("email").asText();
         String nickname = googleUserInfo.get("name").asText();
         String profile_img = googleUserInfo.get("picture").asText();
@@ -157,10 +158,11 @@ public class GoogleUserService {
         // DB 에 중복된 구글 Id 가 있는지 확인
         System.out.println("구글유저확인 클래스 들어옴");
         String googleEmail = googleUserInfo.getEmail();
-        User googleUser = userRepository.findByEmail(googleEmail)
+        User googleUser = userRepository.findByEmailAndSocial(googleEmail,googleUserInfo.getSocial())
                 .orElse(null);
         if (googleUser == null) {
             // 회원가입
+            System.out.println("회원정보 없는 회원임(새로운 회원!)");
             // username: kakao nickname
             String name = googleUserInfo.getNickname();
             System.out.println("네임 넣음 = " + name);

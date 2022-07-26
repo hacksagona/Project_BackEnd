@@ -3,8 +3,11 @@ package com.project.hack.service;
 import com.project.hack.dto.request.PostRequestDto;
 import com.project.hack.dto.response.PhotoDto;
 import com.project.hack.dto.response.PostResponseDto;
+import com.project.hack.exception.CustomException;
+import com.project.hack.exception.ErrorCode;
 import com.project.hack.model.Mission;
 import com.project.hack.model.Post;
+import com.project.hack.model.PostLikes;
 import com.project.hack.model.User;
 import com.project.hack.repository.*;
 import com.project.hack.security.UserDetailsImpl;
@@ -17,8 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -96,12 +99,36 @@ public class PostService {
     public List<PostResponseDto> getGoalShotPost(User user) {
 
         List<Post> posts = postRepository.findAll();
-        List<PostResponseDto> postResponseDtos = new ArrayList<>();
-        for(Post post : posts){
-            Long postId = post.getPostId();
+//        List<Mission> missionList = missionRepository.findByUserId(user.getId());
+//        List<Post> postList = postRepository.findByUser(user);
 
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+        Collections.shuffle(posts);
+        int i = 0;
+        for(Post post : posts){
+            if(i==11){i =0; break;}
+            Long postId = post.getPostId();
             Long userId = user.getId();
             if(!postDontLikesRepository.findByUserIdAndPostId(userId, postId).isPresent() &&!postLikesRepository.findByUserIdAndPostId(userId,postId).isPresent()){
+                int likes = postLikesRepository.findByPostId(post.getPostId()).size();
+                PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(),likes);
+                postResponseDtos.add(postResponseDto);
+                i++;
+            }
+        }
+        return postResponseDtos;
+    }
+
+    public List<PostResponseDto> getTodayLikes(User user) {
+        List<PostResponseDto> postResponseDtos =new ArrayList<>();
+        List<PostLikes> postLikesList = postLikesRepository.findByUserId(user.getId());
+        LocalDate now = LocalDate.now();
+        int nowDay = now.getDayOfMonth();
+        if(postLikesList.size() ==0){return postResponseDtos;}
+        for (PostLikes postLikes : postLikesList){
+            int likeDay = postLikes.getCreatedAtDateOnly().getDayOfMonth();
+            if(nowDay == likeDay){
+                Post post = postRepository.findById(postLikes.getPostId()).orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
                 int likes = postLikesRepository.findByPostId(post.getPostId()).size();
                 PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(),likes);
                 postResponseDtos.add(postResponseDto);
@@ -109,6 +136,4 @@ public class PostService {
         }
         return postResponseDtos;
     }
-
-
 }

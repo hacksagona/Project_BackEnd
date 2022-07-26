@@ -15,11 +15,11 @@ public class ChatRoomResponseDto {
     @Builder
     public static class ChatRoomData {
 //        private Long chatId;
-        private String buyerNickName;
-        private String buyerProfileImg;
-        private String sellerNickName;
-        private String sellerProfileImg;
-        private Long buyerId;
+        private String senderNickName;
+        private String senderProfileImg;
+        private String receiverNickName;
+        private String receiverProfileImg;
+        private Long senderId;
         private Long chatRoomId;
     }
 
@@ -66,6 +66,8 @@ public class ChatRoomResponseDto {
         private String result;
         private String msg;
         private LocalDateTime lastDatetime;
+        private String myProfileImg;
+        private String myNickname;
         private String otherProfileImg;
         private String otherNickName;
         private int resultCount;

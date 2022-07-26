@@ -1,9 +1,11 @@
 package com.project.hack.chat.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -19,10 +21,24 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableRedisRepositories
 public class RedisRepositoryConfig {
 
+    @Value("${spring.redis.host}")
+    private String redisHost;
+
+    @Value("${spring.redis.port}")
+    private String redisPort;
+
+//    @Bean
+//    public RedisConnectionFactory redisConnectionFactory() {
+//        return new LettuceConnectionFactory("localhost", 6379);
+//    }
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory("localhost", 6379);
+       RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+       redisStandaloneConfiguration.setHostName(redisHost);
+      redisStandaloneConfiguration.setPort(Integer.parseInt(redisPort));
+      return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
+
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {

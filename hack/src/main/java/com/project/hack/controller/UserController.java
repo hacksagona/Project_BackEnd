@@ -38,21 +38,14 @@ public class UserController {
 
 
 
-    //회원가입
-    @PostMapping("/user/signup")
-    public ResponseEntity registerUser(@RequestBody SignupRequestDto requestDto) {
-
-            userService.registerUser(requestDto);
-            return new ResponseEntity("회원가입 성공!", HttpStatus.OK);
-    }
+    //====================로그인한 유저정보 확인============
 
     @GetMapping("/user/auth")
     public UserResponseDto islogin(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         System.out.println("islogin 시작");
         User user = userDetails.getUser();
         System.out.println("email : " + user.getEmail());
-        System.out.println("nickname : " + user.getNickname());
-        return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img(),user.isNewUser());
+        return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img(),user.isNewUser(), user.isTutorial());
     }
 //===========================소셜로그인======================
     @GetMapping("/oauth/kakao/callback")
@@ -110,6 +103,11 @@ public class UserController {
     @PutMapping("/user/update/isNewUser")
     public boolean updateIsNewUser(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return !userService.updateIsNewUser(userDetails);
+    }
+
+    @PutMapping("/user/update/isTutorial")
+    public boolean updateIsTutorial(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return !userService.updateIsTutorial(userDetails);
     }
 
     @PostMapping("/user/signup/checkEmail")

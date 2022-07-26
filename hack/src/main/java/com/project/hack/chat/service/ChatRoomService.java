@@ -35,31 +35,39 @@ public class ChatRoomService {
     //채팅방 생성
     @Transactional
     public ChatRoomResponseDto.ChatRoomData createChatRoom(@RequestBody ChatRoomRequestDto.Create create) {
-        User buyer = userRepository.findById(create.getBuyerId()).orElseThrow(
+        User sender = userRepository.findById(create.getSenderId()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        User seller = userRepository.findById(create.getSellerId()).orElseThrow(
+        User receiver = userRepository.findById(create.getReceiverId()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
+        System.out.println("senderId : " + sender.getId());
+        System.out.println("receiverId : " + receiver.getId());
         //이미 있는지 확인
-        ChatRoom chatRoomExistCheck = chatRoomRepository.findByBuyerAndSeller(buyer,seller);
+        ChatRoom chatRoomExistCheck = chatRoomRepository.findBySenderAndReceiver(sender,receiver);
         if(chatRoomExistCheck!=null){
-            return ChatRoomResponseDto.ChatRoomData.builder().chatRoomId(chatRoomExistCheck.getId()).build();
+            return ChatRoomResponseDto.ChatRoomData.builder().receiverNickName(chatRoomExistCheck.getReceiver().getNickname())
+                    .senderNickName(chatRoomExistCheck.getSender().getNickname())
+                    .receiverProfileImg(chatRoomExistCheck.getReceiver().getProfile_img())
+                    .senderProfileImg(chatRoomExistCheck.getSender().getProfile_img())
+                    .chatRoomId(chatRoomExistCheck.getId())
+                    .senderId(create.getSenderId())
+                    .build();
         }
 
         ChatRoom chatRoom = ChatRoom.create(ChatRoom.builder()
-                .buyer(buyer)
-                .seller(seller)
+                .sender(sender)
+                .receiver(receiver)
                 .build());
 
         Long chatRoomId = chatRoomRepository.save(chatRoom).getId();
+        System.out.println("채팅방 id : " + chatRoomId);
 
         ChatRoomResponseDto.ChatRoomData chatRoomData = ChatRoomResponseDto.ChatRoomData.builder()
-                .sellerNickName(chatRoom.getSeller().getNickname())
-                .buyerNickName(chatRoom.getBuyer().getNickname())
-                .sellerProfileImg(chatRoom.getSeller().getProfile_img())
-                .buyerProfileImg(chatRoom.getBuyer().getProfile_img())
+                .receiverNickName(chatRoom.getReceiver().getNickname())
+                .senderNickName(chatRoom.getSender().getNickname())
+                .receiverProfileImg(chatRoom.getReceiver().getProfile_img())
+                .senderProfileImg(chatRoom.getSender().getProfile_img())
                 .chatRoomId(chatRoomId)
-                .buyerId(create.getBuyerId())
+                .senderId(create.getSenderId())
                 .build();
 
         return chatRoomData;
@@ -76,7 +84,7 @@ public class ChatRoomService {
         List<ChatRoom> chatRoomList = chatRoomRepository.findAllByUserId(userId);
         List<ChatRoomResponseDto.ChatRoomList> chatRoomListList = new ArrayList<>();
         for (ChatRoom chatRoom : chatRoomList){
-            if(Objects.equals(userId, chatRoom.getBuyer().getId())){
+            if(Objects.equals(userId, chatRoom.getSender().getId())){
                 String lastChat = "";
                 if(chatRoom.getChatMessageList().size()==0){
                     lastChat = "채팅이 없습니다.";
@@ -85,8 +93,8 @@ public class ChatRoomService {
                 }
                 ChatRoomResponseDto.ChatRoomList chatRoomListBuilder = ChatRoomResponseDto.ChatRoomList.builder()
                         .chatRoomId(chatRoom.getId())
-                        .otherProfileImg(chatRoom.getSeller().getProfile_img())
-                        .otherNickName(chatRoom.getSeller().getNickname())
+                        .otherProfileImg(chatRoom.getReceiver().getProfile_img())
+                        .otherNickName(chatRoom.getReceiver().getNickname())
                         .modifiedAt(chatRoom.getModifiedAt())
                         .lastChat(lastChat)
                         .build();
@@ -100,8 +108,8 @@ public class ChatRoomService {
                 }
                 ChatRoomResponseDto.ChatRoomList chatRoomListBuilder = ChatRoomResponseDto.ChatRoomList.builder()
                         .chatRoomId(chatRoom.getId())
-                        .otherProfileImg(chatRoom.getBuyer().getProfile_img())
-                        .otherNickName(chatRoom.getBuyer().getNickname())
+                        .otherProfileImg(chatRoom.getSender().getProfile_img())
+                        .otherNickName(chatRoom.getSender().getNickname())
                         .modifiedAt(chatRoom.getModifiedAt())
                         .lastChat(lastChat)
                         .build();
@@ -124,16 +132,16 @@ public class ChatRoomService {
 
         User another = new User();
 
-
+        User me = userRepository.findById(userId).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
         //내가 buyer인지 seller인지 구별하기 위한 코드
-        if (Objects.equals(chatRoom.getBuyer().getId(), userId)){
-            another = chatRoom.getSeller();
+        if (Objects.equals(chatRoom.getSender().getId(), userId)){
+            another = chatRoom.getReceiver();
         }else {
-            another = chatRoom.getBuyer();
+            another = chatRoom.getSender();
         }
 
         LocalDateTime lastDateTime = null;
-        List<ChatMessage> chatMessageList = chatMessageRepository.findByChatRoomOrderByModifiedAt(chatRoomId,localDateTime);
+        List<ChatMessage> chatMessageList = chatMessageRepository.findByChatRoomIdOrderByModifiedAt(chatRoomId);
 
         int resultCount = chatMessageList.size();
 
@@ -155,6 +163,8 @@ public class ChatRoomService {
                 .msg("해당 채팅방 채팅 내용 반환 성공")
                 .resultCount(resultCount)
                 .lastDatetime(lastDateTime)
+                .myProfileImg(me.getProfile_img())
+                .myNickname(me.getNickname())
                 .otherProfileImg(another.getProfile_img())
                 .otherNickName(another.getNickname())
                 .chatMessageDataList(chatMessageDataList)

@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostLikes {
+public class PostLikes extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

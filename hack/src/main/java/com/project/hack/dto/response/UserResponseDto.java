@@ -7,6 +7,7 @@ import lombok.*;
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserResponseDto {
     private String email;
     private String name;
@@ -15,6 +16,7 @@ public class UserResponseDto {
     private String nickname;
     private String profile_img;
     private boolean isNewUser;
+    private boolean isTutorial;
 
 
 
@@ -33,14 +35,5 @@ public class UserResponseDto {
         this.email = email;
         this.name = name;
         this.nickname = nickname;
-    }
-
-    public UserResponseDto(String email, String name, Long userId, String nickname, String profile_img, boolean isNewUser) {
-        this.email = email;
-        this.name = name;
-        this.userId = userId;
-        this.nickname = nickname;
-        this.profile_img = profile_img;
-        this.isNewUser = isNewUser;
     }
 }

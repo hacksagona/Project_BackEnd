@@ -10,6 +10,5 @@ import java.util.List;
 
 public interface ChatMessageRepository extends JpaRepository<ChatMessage,Long> {
 
-    @Query(nativeQuery = true, value = "select * from chat_message ch where ch.chatroomid=:chatroomId and ORDER BY ch.modified_at desc LIMIT :startNum,5;")
-    List<ChatMessage> findByChatRoomOrderByModifiedAt(Long chatroomId, LocalDateTime localDateTime);
+    List<ChatMessage> findByChatRoomIdOrderByModifiedAt(Long chatroomId);
 }

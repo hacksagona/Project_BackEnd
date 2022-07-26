@@ -26,8 +26,10 @@ public class ChatRoomController {
     @PostMapping("/room")
     @ResponseBody
     public ChatRoomResponseDto.ChatRoomData createRoom(@RequestBody ChatRoomRequestDto.Create create, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        System.out.println("룸생성 시도");
         User user = userDetails.getUser();
-        tokenValidator.userIdCompareToken(create.getBuyerId(), user.getId());
+        tokenValidator.userIdCompareToken(create.getSenderId(), user.getId());
+        System.out.println("토큰벨리데이터 성공");
         return chatRoomService.createChatRoom(create);
 
     }
@@ -36,7 +38,9 @@ public class ChatRoomController {
     @GetMapping("/room/{userId}")
     @ResponseBody
     public ChatRoomResponseDto.ChatRoomListData chatList(@PathVariable Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        System.out.println("채팅방 리스트 받아오기 시도");
         tokenValidator.userIdCompareToken(userId,userDetails.getUser().getId());
+        System.out.println("토큰벨리데이터 성공");
         return chatRoomService.findChatList(userId);
     }
 

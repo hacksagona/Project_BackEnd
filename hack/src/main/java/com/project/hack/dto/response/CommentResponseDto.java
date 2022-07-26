@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -25,6 +26,8 @@ public class CommentResponseDto {
     private String name;
     private String comment;
     private String profile_img;
+
+    private String createdAtDateOnly;
 
 
     public CommentResponseDto(Comment comment, User user) {
@@ -45,7 +48,16 @@ public class CommentResponseDto {
         this.postId = comment.getPost().getPostId();
         this.createdAt = comment.getCreatedAt();
         this.userId = comment.getUser().getId();
+        this.createdAtDateOnly = createAtDateOnly(comment);
     }
+        public static String createAtDateOnly(Comment comment){
+            LocalDate createdAtDateOnly = comment.getCreatedAtDateOnly();
+            String year = Integer.toString(createdAtDateOnly.getYear());
+            year = year.substring(year.length()-2,year.length());
+            String month = Integer.toString(createdAtDateOnly.getMonthValue());
+            String day = Integer.toString(createdAtDateOnly.getDayOfMonth());
+            return year+"."+month+"."+day;
+        }
 
         public static String calculatedTime(Comment comment){
             final int SEC = 60;

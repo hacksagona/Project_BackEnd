@@ -76,6 +76,7 @@ public class NaverUserService {
         return UserResponseDto.builder()
                 .userId(naverUser.getId())
                 .isNewUser(naverUser.isNewUser())
+                .isTutorial(naverUser.isTutorial())
                 .email(naverUser.getEmail())
                 .nickname(naverUser.getNickname())
                 .profile_img(naverUser.getProfile_img()).build();
@@ -158,10 +159,11 @@ public class NaverUserService {
         // DB 에 중복된 Kakao Id 가 있는지 확인
         System.out.println("네이버유저확인 클래스 들어옴===================");
         String naverEmail = UserInfo.getEmail();
-        User naverUser = userRepository.findByEmail(naverEmail)
+        User naverUser = userRepository.findByEmailAndSocial(naverEmail, UserInfo.getSocial())
                 .orElse(null);
         if (naverUser == null) {
             // 회원가입
+            System.out.println("회원정보 없는 회원임(새로운 회원!)");
             // username: kakao nickname
             String name = UUID.randomUUID().toString();
             System.out.println("네임 넣음 = " + name);

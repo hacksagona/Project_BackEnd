@@ -10,7 +10,7 @@ public class ChatRoomRequestDto {
     @Builder
     @Setter
     public static class Create {
-        private Long buyerId;
-        private Long sellerId;
+        private Long senderId;
+        private Long receiverId;
     }
 }

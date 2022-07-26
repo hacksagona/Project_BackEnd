@@ -25,12 +25,12 @@ public class ChatRoom extends Timestamped implements Serializable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="SELLERID")
-    private User seller;
+    @JoinColumn(name="RECEIVERID")
+    private User receiver;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="BUYERID")
-    private User buyer;
+    @JoinColumn(name="SENDERID")
+    private User sender;
 
     @Builder.Default
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.REMOVE)
@@ -38,8 +38,8 @@ public class ChatRoom extends Timestamped implements Serializable {
 
     public static ChatRoom create(ChatRoom create){
         ChatRoom chatRoom = new ChatRoom();
-        chatRoom.seller = create.getSeller();
-        chatRoom.buyer = create.getBuyer();
+        chatRoom.receiver = create.getReceiver();
+        chatRoom.sender = create.getSender();
         return chatRoom;
     }
 
