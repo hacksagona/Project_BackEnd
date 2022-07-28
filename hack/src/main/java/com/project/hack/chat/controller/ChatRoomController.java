@@ -34,7 +34,7 @@ public class ChatRoomController {
 
     }
 
-    //채팅 리스트 받아오기
+    //채팅방 리스트 받아오기
     @GetMapping("/room/{userId}")
     @ResponseBody
     public ChatRoomResponseDto.ChatRoomListData chatList(@PathVariable Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {

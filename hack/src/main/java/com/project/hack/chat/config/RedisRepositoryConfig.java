@@ -27,10 +27,6 @@ public class RedisRepositoryConfig {
     @Value("${spring.redis.port}")
     private String redisPort;
 
-//    @Bean
-//    public RedisConnectionFactory redisConnectionFactory() {
-//        return new LettuceConnectionFactory("localhost", 6379);
-//    }
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
@@ -65,7 +61,6 @@ public class RedisRepositoryConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(listenerAdapter, channelTopic);
-        //  위 주석 풀게되면 지속적으로 redis connection failure occurred 에러가 나옴
         return container;
     }
 

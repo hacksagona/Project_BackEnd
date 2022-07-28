@@ -90,30 +90,31 @@ public class ChatRoomService {
                     lastChat = "채팅이 없습니다.";
                 }else {
                     lastChat = chatRoom.getChatMessageList().get(chatRoom.getChatMessageList().size()-1).getMessage();
+                    ChatRoomResponseDto.ChatRoomList chatRoomListBuilder = ChatRoomResponseDto.ChatRoomList.builder()
+                            .chatRoomId(chatRoom.getId())
+                            .otherProfileImg(chatRoom.getReceiver().getProfile_img())
+                            .otherNickName(chatRoom.getReceiver().getNickname())
+                            .modifiedAt(chatRoom.getModifiedAt())
+                            .lastChat(lastChat)
+                            .build();
+                    chatRoomListList.add(chatRoomListBuilder);
                 }
-                ChatRoomResponseDto.ChatRoomList chatRoomListBuilder = ChatRoomResponseDto.ChatRoomList.builder()
-                        .chatRoomId(chatRoom.getId())
-                        .otherProfileImg(chatRoom.getReceiver().getProfile_img())
-                        .otherNickName(chatRoom.getReceiver().getNickname())
-                        .modifiedAt(chatRoom.getModifiedAt())
-                        .lastChat(lastChat)
-                        .build();
-                chatRoomListList.add(chatRoomListBuilder);
+
             }else {
                 String lastChat = "";
                 if(chatRoom.getChatMessageList().size()==0){
                     lastChat = "채팅이 없습니다.";
                 }else {
                     lastChat = chatRoom.getChatMessageList().get(chatRoom.getChatMessageList().size()-1).getMessage();
+                    ChatRoomResponseDto.ChatRoomList chatRoomListBuilder = ChatRoomResponseDto.ChatRoomList.builder()
+                            .chatRoomId(chatRoom.getId())
+                            .otherProfileImg(chatRoom.getSender().getProfile_img())
+                            .otherNickName(chatRoom.getSender().getNickname())
+                            .modifiedAt(chatRoom.getModifiedAt())
+                            .lastChat(lastChat)
+                            .build();
+                    chatRoomListList.add(chatRoomListBuilder);
                 }
-                ChatRoomResponseDto.ChatRoomList chatRoomListBuilder = ChatRoomResponseDto.ChatRoomList.builder()
-                        .chatRoomId(chatRoom.getId())
-                        .otherProfileImg(chatRoom.getSender().getProfile_img())
-                        .otherNickName(chatRoom.getSender().getNickname())
-                        .modifiedAt(chatRoom.getModifiedAt())
-                        .lastChat(lastChat)
-                        .build();
-                chatRoomListList.add(chatRoomListBuilder);
             }
         }
         return ChatRoomResponseDto.ChatRoomListData.builder()
