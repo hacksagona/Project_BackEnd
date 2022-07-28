@@ -50,26 +50,13 @@ public class GoogleUserService {
     private final PasswordEncoder passwordEncoder;
     // 구글 로그인
 
-    public UserResponseDto GoogleLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public SocialUserInfoDto GoogleLogin(String code) throws JsonProcessingException {
 
         // 인가코드로 엑세스토큰 가져오기
         String accessToken = getAccessToken(code);
 
         // 엑세스토큰으로 유저정보 가져오기
-        SocialUserInfoDto googleUserInfo = getGoogleUserInfo(accessToken);
-
-
-        User googleUser = registerGoogleUserIfNeeded(googleUserInfo);
-
-        // 4. 강제 로그인 처리
-        jwtTokenCreate(googleUser, response);
-
-        return UserResponseDto.builder()
-                .userId(googleUser.getId())
-                .isNewUser(googleUser.isNewUser())
-                .isTutorial(googleUser.isTutorial())
-                .email(googleUser.getEmail())
-                .profile_img(googleUser.getProfile_img()).build();
+        return getGoogleUserInfo(accessToken);
     }
 
     // 인가코드로 엑세스토큰 가져오기
@@ -151,65 +138,5 @@ public class GoogleUserService {
                 .email(email)
                 .nickname(nickname)
                 .profile_img(profile_img).build();
-    }
-
-
-    private User registerGoogleUserIfNeeded(SocialUserInfoDto googleUserInfo) {
-        // DB 에 중복된 구글 Id 가 있는지 확인
-        System.out.println("구글유저확인 클래스 들어옴");
-        String googleEmail = googleUserInfo.getEmail();
-        User googleUser = userRepository.findByEmailAndSocial(googleEmail,googleUserInfo.getSocial())
-                .orElse(null);
-        if (googleUser == null) {
-            // 회원가입
-            System.out.println("회원정보 없는 회원임(새로운 회원!)");
-            // username: kakao nickname
-            String name = googleUserInfo.getNickname();
-            System.out.println("네임 넣음 = " + name);
-//            String username = kakaoUserInfo.getNickname();
-            String email = googleUserInfo.getEmail();
-            System.out.println("이메일 넣음 = " + email);
-
-            String nickname = UUID.randomUUID().toString();
-            System.out.println("닉네임 넣음 = " + nickname);
-
-            // password: random UUID
-            String password = UUID.randomUUID().toString();
-            System.out.println("비밀번호 넣음 = " + password);
-
-            String encodedPassword = passwordEncoder.encode(password);
-            System.out.println("비밀번호 암호화  = " + encodedPassword);
-//            String profile_img = googleUserInfo.getProfile_img();
-            String profile_img = profileImg;
-            System.out.println("프로필 넣음  = " + profile_img);
-            String social = "google";
-
-            googleUser = new User(name, nickname,email, encodedPassword, profile_img,social);
-            userRepository.save(googleUser);
-        }
-        System.out.println("구글 유저정보 넣음");
-        return googleUser;
-    }
-
-    private void jwtTokenCreate(User googleUser, HttpServletResponse response) {
-
-        System.out.println("jwtTokenCreate 클래스 들어옴");
-
-        UserDetails userDetails = new UserDetailsImpl(googleUser);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        //여기까진 평범한 로그인과 같음
-        System.out.println("강제로그인 시도까지 함");
-        //여기부터 토큰 프론트에 넘기는것
-
-        UserDetailsImpl userDetails1 = ((UserDetailsImpl) authentication.getPrincipal());
-
-        System.out.println("userDetails1 : " + userDetails1.toString());
-
-        final String token = JwtTokenUtils.generateJwtToken(userDetails1);
-
-        System.out.println("token값:" + token);
-        response.addHeader("Authorization", "BEARER" + " " + token);
-
     }
 }

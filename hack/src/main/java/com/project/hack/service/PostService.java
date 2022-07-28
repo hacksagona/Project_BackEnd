@@ -99,8 +99,8 @@ public class PostService {
     public List<PostResponseDto> getGoalShotPost(User user) {
 
         List<Post> posts = postRepository.findAll();
-//        List<Mission> missionList = missionRepository.findByUserId(user.getId());
-//        List<Post> postList = postRepository.findByUser(user);
+        List<Mission> missionList = missionRepository.findByUserId(user.getId());
+        List<Post> postList = postRepository.findByUser(user);
 
         List<PostResponseDto> postResponseDtos = new ArrayList<>();
         Collections.shuffle(posts);

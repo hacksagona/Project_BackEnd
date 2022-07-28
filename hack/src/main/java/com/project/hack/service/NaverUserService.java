@@ -54,32 +54,16 @@ public class NaverUserService {
     private String profileImg;
 
     @Transactional
-    public UserResponseDto naverLogin(String code, HttpServletResponse response, String state) throws JsonProcessingException {
+    public SocialUserInfoDto naverLogin(String code, String state) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
 
         System.out.println("인가 코드 : " + code);
-        System.out.println("naverClientKId : " +naverClientKId);
-        System.out.println("naverClientSecret : " +naverClientSecret);
-        System.out.println("naverRedirectUri : " +naverRedirectUri);
         String accessToken = getAccessToken(code, state);
         System.out.println("엑세스 토큰: " + accessToken);
 
         // 2. 토큰으로 카카오 API 호출
-        SocialUserInfoDto naverUserInfo = getNaverUserInfo(accessToken);
+        return getNaverUserInfo(accessToken);
 
-        // 3. 필요시에 회원가입
-        User naverUser = registerKakaoUserIfNeeded(naverUserInfo);
-
-        // 4. 강제 로그인 처리
-        jwtTokenCreate(naverUser, response);
-
-        return UserResponseDto.builder()
-                .userId(naverUser.getId())
-                .isNewUser(naverUser.isNewUser())
-                .isTutorial(naverUser.isTutorial())
-                .email(naverUser.getEmail())
-                .nickname(naverUser.getNickname())
-                .profile_img(naverUser.getProfile_img()).build();
     }
 
     private String getAccessToken(String code, String state) throws JsonProcessingException {
@@ -153,64 +137,5 @@ public class NaverUserService {
         return SocialUserInfoDto.builder()
                 .social("Naver")
                 .email(email).build();
-    }
-
-    private User registerKakaoUserIfNeeded(SocialUserInfoDto UserInfo) {
-        // DB 에 중복된 Kakao Id 가 있는지 확인
-        System.out.println("네이버유저확인 클래스 들어옴===================");
-        String naverEmail = UserInfo.getEmail();
-        User naverUser = userRepository.findByEmailAndSocial(naverEmail, UserInfo.getSocial())
-                .orElse(null);
-        if (naverUser == null) {
-            // 회원가입
-            System.out.println("회원정보 없는 회원임(새로운 회원!)");
-            // username: kakao nickname
-            String name = UUID.randomUUID().toString();
-            System.out.println("네임 넣음 = " + name);
-//            String username = kakaoUserInfo.getNickname();
-            String email = UserInfo.getEmail();
-            System.out.println("이메일 넣음 = " + email);
-
-            // password: random UUID
-            String password = UUID.randomUUID().toString();
-            System.out.println("비밀번호 넣음 = " + password);
-
-            String nickname = UUID.randomUUID().toString();
-            System.out.println("닉네임 넣음 = " + nickname);
-
-            String encodedPassword = passwordEncoder.encode(password);
-            System.out.println("비밀번호 암호화  = " + encodedPassword);
-
-            String profile_img = profileImg;
-            System.out.println("프로필 넣음  = " + profile_img);
-            String social = UserInfo.getSocial();
-
-            naverUser = new User(name, nickname,email, encodedPassword, profile_img,social);
-            userRepository.save(naverUser);
-        }
-        System.out.println("네이버 유저정보 넣음");
-        return naverUser;
-    }
-
-    private void jwtTokenCreate(User user, HttpServletResponse response) {
-
-        System.out.println("jwtTokenCreate 클래스 들어옴");
-
-        UserDetails userDetails = new UserDetailsImpl(user);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        //여기까진 평범한 로그인과 같음
-        System.out.println("강제로그인 시도까지 함");
-        //여기부터 토큰 프론트에 넘기는것
-
-        UserDetailsImpl userDetails1 = ((UserDetailsImpl) authentication.getPrincipal());
-
-        System.out.println("userDetails1 : " + userDetails1.toString());
-
-        final String token = JwtTokenUtils.generateJwtToken(userDetails1);
-
-        System.out.println("token값:" +"BEARER " + token);
-        response.addHeader("Authorization", "BEARER " + token);
-
     }
 }

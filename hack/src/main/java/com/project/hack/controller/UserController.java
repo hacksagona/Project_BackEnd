@@ -1,19 +1,18 @@
 package com.project.hack.controller;
 
+import com.amazonaws.services.codecommit.model.UserInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.hack.dto.request.SignupRequestDto;
 import com.project.hack.dto.request.UserRequestDto;
 import com.project.hack.dto.response.PhotoDto;
+import com.project.hack.dto.response.SocialUserInfoDto;
 import com.project.hack.dto.response.UserResponseDto;
 import com.project.hack.exception.CustomException;
 import com.project.hack.exception.ErrorCode;
 import com.project.hack.model.User;
 import com.project.hack.repository.UserRepository;
 import com.project.hack.security.UserDetailsImpl;
-import com.project.hack.service.GoogleUserService;
-import com.project.hack.service.KakaoUserService;
-import com.project.hack.service.NaverUserService;
-import com.project.hack.service.UserService;
+import com.project.hack.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +33,7 @@ public class UserController {
     private final KakaoUserService kakaoUserService;
     private final GoogleUserService googleUserService;
     private final NaverUserService naverUserService;
+    private final UserLoginService userLoginService;
 
 
 
@@ -45,14 +45,16 @@ public class UserController {
         System.out.println("islogin 시작");
         User user = userDetails.getUser();
         System.out.println("email : " + user.getEmail());
-        return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img(),user.isNewUser(), user.isTutorial());
+        return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img(),user.isNewUser(),user.isPicChange());
     }
 //===========================소셜로그인======================
     @GetMapping("/oauth/kakao/callback")
     public UserResponseDto kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 
         try { // 회원가입 진행 성공시 true
-            return kakaoUserService.kakaoLogin(code, response);
+            SocialUserInfoDto userInfo = kakaoUserService.kakaoLogin(code);
+            User user = userLoginService.finalLogin(userInfo);
+            return userLoginService.jwtTokenCreate(user, response);
         }catch (Exception e){ // 에러나면 false
             System.out.println("카톡 로그인 성공 못함!");
             throw new CustomException(ErrorCode.INVALID_LOGIN_ATTEMPT);
@@ -60,12 +62,13 @@ public class UserController {
     }
 
     @GetMapping("/oauth/google/callback")
-    public ResponseEntity GoogleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    public UserResponseDto GoogleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
 
         try { // 회원가입 진행 성공시 true
             System.out.println("구글 로그인 시도");
-            UserResponseDto userResponseDto = googleUserService.GoogleLogin(code, response);
-            return new ResponseEntity(userResponseDto,HttpStatus.OK);
+            SocialUserInfoDto userInfo = googleUserService.GoogleLogin(code);
+            User user = userLoginService.finalLogin(userInfo);
+            return userLoginService.jwtTokenCreate(user, response);
         }catch (Exception e){ // 에러나면 false
             System.out.println("구글 로그인 성공 못함!");
             throw new CustomException(ErrorCode.INVALID_LOGIN_ATTEMPT);
@@ -77,8 +80,9 @@ public class UserController {
 
         try { // 회원가입 진행 성공시 true
             System.out.println("네이버 로그인 시도");
-            System.out.println("state : " +state);
-            return naverUserService.naverLogin(code, response,state);
+            SocialUserInfoDto userInfo = naverUserService.naverLogin(code,state);
+            User user = userLoginService.finalLogin(userInfo);
+            return userLoginService.jwtTokenCreate(user, response);
         }catch (Exception e){ // 에러나면 false
             System.out.println("네이버 로그인 성공 못함!");
             throw new CustomException(ErrorCode.INVALID_LOGIN_ATTEMPT);
@@ -105,16 +109,6 @@ public class UserController {
         return !userService.updateIsNewUser(userDetails);
     }
 
-    @PutMapping("/user/update/isTutorial")
-    public boolean updateIsTutorial(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return !userService.updateIsTutorial(userDetails);
-    }
-
-    @PostMapping("/user/signup/checkEmail")
-    public boolean checkEmail(@RequestBody SignupRequestDto requestDto) {
-
-        return userService.checkEmail(requestDto);
-    }
 
     @PostMapping("/user/signup/checkNickname")
     public boolean checkNickname(@RequestBody SignupRequestDto requestDto) {

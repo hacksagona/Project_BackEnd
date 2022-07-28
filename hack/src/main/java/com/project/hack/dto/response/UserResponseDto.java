@@ -16,7 +16,7 @@ public class UserResponseDto {
     private String nickname;
     private String profile_img;
     private boolean isNewUser;
-    private boolean isTutorial;
+    private boolean picChange;
 
 
 

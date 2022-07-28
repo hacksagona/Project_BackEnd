@@ -45,7 +45,7 @@ public class User {
     private boolean isNewUser;
 
     @Column(nullable = false)
-    private boolean isTutorial;
+    private boolean picChange;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "user", orphanRemoval = true)
@@ -63,7 +63,7 @@ public class User {
         this.password = encodedPassword;
         this.profile_img = profile_img;
         this.isNewUser = true;
-        this.isTutorial = false;
+        this.picChange = false;
         this.social = social;
     }
 
@@ -71,7 +71,7 @@ public class User {
         this.nickname = nickname;
     }
     public void updateIsNewUser(){this.isNewUser = false;}
-    public void updateIsTutorial(){this.isTutorial = true;}
+    public void updatePicChange(){this.picChange = true;}
 
 
     // 마이페이지 업데이트

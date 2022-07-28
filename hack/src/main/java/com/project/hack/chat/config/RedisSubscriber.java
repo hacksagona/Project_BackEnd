@@ -29,8 +29,8 @@ public class RedisSubscriber {
             System.out.println("sub 메시지 확인");
             System.out.println(chatMessage);
 
-            messagingTemplate.convertAndSend("/sub/chat/room" + chatMessage.getChatRoomId(), chatMessage);
-            System.out.println("발송 요청 완료");
+            messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getChatRoomId(), chatMessage);
+            System.out.println("/sub/chat/room/" + chatMessage.getChatRoomId()+" 발송 요청 완료");
 
 
         } catch (Exception e) {

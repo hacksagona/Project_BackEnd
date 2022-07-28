@@ -33,7 +33,7 @@ public class ChatController {
     // 웹소켓으로 들어오는 메시지 발행 처리 -> 클라이언트에서는 /pub/templates/chat/message로 발행 요청
     @MessageMapping("/templates/chat/message")
     @Transactional
-    public void message(ChatMessageRequestDto.Write message){
+    public String message(ChatMessageRequestDto.Write message){
 
         System.out.println("채팅 보내는 클래스 들어옴");
 
@@ -45,16 +45,16 @@ public class ChatController {
                 .writer(user)
                 .build();
 
-        //Websocket에 발행된 메시지를 redis로 발행(publish)
-//        redisTemplate.convertAndSend(channelTopic.getTopic(),
-//                ChatMessageRequestDto.WriteSubscriber.builder()
-//                        .userId(message.getUserId())
-//                        .userNickname(user.getNickname())
-//                        .modifiedAt(message.getModifiedAt())
-//                        .chatRoomId(message.getChatRoomId())
-//                        .message(message.getMessage())
-//                        .build());
-//        System.out.println("메시지 redis 발행 완료");
+//        Websocket에 발행된 메시지를 redis로 발행(publish)
+        redisTemplate.convertAndSend(channelTopic.getTopic(),
+                ChatMessageRequestDto.WriteSubscriber.builder()
+                        .userId(message.getUserId())
+                        .userNickname(user.getNickname())
+                        .modifiedAt(message.getModifiedAt())
+                        .chatRoomId(message.getChatRoomId())
+                        .message(message.getMessage())
+                        .build());
+        System.out.println("메시지 redis 발행 완료");
         // 룸 modifiedAt
         Long chatMessageId = chatMessageRepository.save(chatMessage).getId();
         System.out.println("chatMessageId : " + chatMessageId);
@@ -64,8 +64,9 @@ public class ChatController {
         chatRoom.setModifiedAt(getMessage.getModifiedAt());
         System.out.println("채팅 수정시간 변경 완료");
 
-        sendingOperations.convertAndSend("/sub/chat/room/"+message.getChatRoomId(),message);
-        System.out.println("메시지 전송까지 했음 : " +message);
+//        sendingOperations.convertAndSend("/sub/chat/room/"+message.getChatRoomId(),message);
+//        System.out.println("메시지 전송까지 했음 : " +message.getMessage());
+        return "킹준호";
     }
 
 }

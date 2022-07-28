@@ -30,34 +30,6 @@ public class UserService {
     private final PhotoRepository photoRepository;
     private final AwsService awsService;
 
-    public void registerUser(SignupRequestDto requestDto) {
-        // 회원 ID 중복 확인
-//        String email = requestDto.getEmail();
-//
-//        if(userRepository.findByEmail(email).isPresent()){
-//            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
-//        }
-//        String name = requestDto.getName();
-//        String p_number =requestDto.getP_number();
-//        String gender = requestDto.getGender();
-//        String location = requestDto.getLocation();
-//        String birth = requestDto.getBirth();
-//        String profile_img = requestDto.getProfile_img();
-//
-//        // 패스워드 암호화
-//        String password = passwordEncoder.encode(requestDto.getPassword());
-//
-//
-//
-//        User user = new User(email, name, p_number, gender, location, birth, password,profile_img);
-//        userRepository.save(user);
-    }
-
-    public boolean checkEmail(SignupRequestDto requestDto){
-        String email = requestDto.getEmail();
-        return (!userRepository.findByEmail(email).isPresent());
-    }
-
     public boolean checkNickname(SignupRequestDto requestDto){
         String nickname = requestDto.getNickname();
         if(nickname ==null|| nickname.equals("")){
@@ -109,13 +81,6 @@ public class UserService {
         return user.isNewUser();
     }
 
-    public boolean updateIsTutorial(UserDetailsImpl userDetails) {
-        User user = userDetails.getUser();
-        user.updateIsTutorial();
-        userRepository.save(user);
-        System.out.println("isTutorial 수정 후 : " +user.isTutorial());
-        return user.isTutorial();
-    }
 
     public void changeProfile(List<MultipartFile> multipartFile, UserDetailsImpl userDetails) {
 
@@ -137,6 +102,7 @@ public class UserService {
         String profile_img = photoDto.getPath();
         System.out.println("프사 : " + profile_img);
         user.updateProfileImg(profile_img);
+        user.updatePicChange();
         userRepository.save(user);
         System.out.println("프사 수정후 저장성공");
     }

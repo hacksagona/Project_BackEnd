@@ -64,7 +64,7 @@ public class RedisRepositoryConfig {
                                                               ChannelTopic channelTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-//        container.addMessageListener(listenerAdapter, channelTopic);
+        container.addMessageListener(listenerAdapter, channelTopic);
         //  위 주석 풀게되면 지속적으로 redis connection failure occurred 에러가 나옴
         return container;
     }

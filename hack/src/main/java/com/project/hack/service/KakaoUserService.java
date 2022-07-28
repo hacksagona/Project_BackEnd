@@ -44,7 +44,7 @@ public class KakaoUserService {
     private String profileImg;
 
     @Transactional
-    public UserResponseDto kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public SocialUserInfoDto kakaoLogin(String code) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
 
         System.out.println("인가 코드 : " + code);
@@ -52,20 +52,8 @@ public class KakaoUserService {
         System.out.println("엑세스 토큰: " + accessToken);
 
         // 2. 토큰으로 카카오 API 호출
-        SocialUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
+        return getKakaoUserInfo(accessToken);
 
-        // 3. 필요시에 회원가입
-        User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
-
-        // 4. 강제 로그인 처리
-        jwtTokenCreate(kakaoUser, response);
-
-        return UserResponseDto.builder()
-                .userId(kakaoUser.getId())
-                .isNewUser(kakaoUser.isNewUser())
-                .isTutorial(kakaoUser.isTutorial())
-                .email(kakaoUser.getEmail())
-                .profile_img(kakaoUser.getProfile_img()).build();
     }
 
     private String getAccessToken(String code) throws JsonProcessingException {
@@ -139,62 +127,4 @@ public class KakaoUserService {
                 .profile_img(profile_img).build();
     }
 
-    private User registerKakaoUserIfNeeded(SocialUserInfoDto kakaoUserInfo) {
-        // DB 에 중복된 Kakao Id 가 있는지 확인
-        System.out.println("카톡유저확인 클래스 들어옴===================");
-        String kakaoEmail = kakaoUserInfo.getEmail();
-        User kakaoUser = userRepository.findByEmailAndSocial(kakaoEmail,kakaoUserInfo.getSocial())
-                .orElse(null);
-        if (kakaoUser == null) {
-            // 회원가입
-            System.out.println("회원정보 없는 회원임(새로운 회원!)");
-            // username: kakao nickname
-            String name = kakaoUserInfo.getNickname();
-            System.out.println("닉네임 넣음 = " + name);
-//            String username = kakaoUserInfo.getNickname();
-            String email = kakaoUserInfo.getEmail();
-            System.out.println("이메일 넣음 = " + email);
-
-            // password: random UUID
-            String password = UUID.randomUUID().toString();
-            System.out.println("비밀번호 넣음 = " + password);
-
-            String nickname = UUID.randomUUID().toString();
-            System.out.println("닉네임 넣음 = " + nickname);
-
-            String encodedPassword = passwordEncoder.encode(password);
-            System.out.println("비밀번호 암호화  = " + encodedPassword);
-//            String profile_img = kakaoUserInfo.getProfile_img();
-            String profile_img = profileImg;
-            System.out.println("프로필 넣음  = " + profile_img);
-            String social = "kakao";
-
-            kakaoUser = new User(name, nickname,email+"_forKakao", encodedPassword, profile_img,social);
-            userRepository.save(kakaoUser);
-        }
-        System.out.println("카카오톡 유저정보 넣음");
-        return kakaoUser;
-    }
-
-    private void jwtTokenCreate(User kakaoUser, HttpServletResponse response) {
-
-        System.out.println("jwtTokenCreate 클래스 들어옴");
-
-        UserDetails userDetails = new UserDetailsImpl(kakaoUser);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        //여기까진 평범한 로그인과 같음
-        System.out.println("강제로그인 시도까지 함");
-        //여기부터 토큰 프론트에 넘기는것
-
-        UserDetailsImpl userDetails1 = ((UserDetailsImpl) authentication.getPrincipal());
-
-        System.out.println("userDetails1 : " + userDetails1.toString());
-
-        final String token = JwtTokenUtils.generateJwtToken(userDetails1);
-
-        System.out.println("token값:" +"BEARER " + token);
-        response.addHeader("Authorization", "BEARER " + token);
-
-    }
 }
