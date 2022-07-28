@@ -19,6 +19,10 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 @RequiredArgsConstructor
 @Controller
 public class ChatController {
@@ -39,18 +43,38 @@ public class ChatController {
 
         ChatRoom chatRoom = chatRoomRepository.findById(message.getChatRoomId()).orElseThrow(()->new CustomException(ErrorCode.CHATROOM_NOT_FOUND));
         User user = userRepository.findById(message.getUserId()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // modifiedAt을 형식에 맞춰 보내기 위한 코드
+        String[] messageModifiedAt = message.getModifiedAt().split("T");
+        String date = messageModifiedAt[0];
+        String time = messageModifiedAt[1];
+        String[] dateList = date.split("-");
+        String year = dateList[0];
+        String month = dateList[1];
+        String day = dateList[2];
+        System.out.println(year +"/"+month+"/"+day);
+        String[] timeList = time.split(":");
+        int hour = Integer.parseInt(timeList[0]);
+        String min = timeList[1];
+        System.out.println("hour : " +hour + " min : "+min);
+        String messagedModifiedAt;
+        if(hour>12){messagedModifiedAt = year+"/" + month+"/"+day + " " + (hour-12)+":"+min+"PM";}
+        else{messagedModifiedAt = year +"/" + month+"/"+day + " " + hour+":"+min+"AM";}
+
         ChatMessage chatMessage = ChatMessage.builder()
                 .message(message.getMessage())
                 .chatRoom(chatRoom)
                 .writer(user)
+                .messageModifiedAt(messagedModifiedAt)
                 .build();
+
 
 //        Websocket에 발행된 메시지를 redis로 발행(publish)
         redisTemplate.convertAndSend(channelTopic.getTopic(),
                 ChatMessageRequestDto.WriteSubscriber.builder()
                         .userId(message.getUserId())
                         .userNickname(user.getNickname())
-                        .modifiedAt(message.getModifiedAt())
+                        .messageModifiedAt(messagedModifiedAt)
                         .chatRoomId(message.getChatRoomId())
                         .message(message.getMessage())
                         .build());

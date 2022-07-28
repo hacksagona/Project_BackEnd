@@ -24,7 +24,7 @@ public class ChatMessageRequestDto {
 
         private Long userId;
         private String userNickname;
-        private String modifiedAt;
+        private String messageModifiedAt;
         private Long chatRoomId;
         private String message;
     }

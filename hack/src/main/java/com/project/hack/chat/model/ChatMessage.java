@@ -29,4 +29,7 @@ public class ChatMessage extends Timestamped {
     @Column(nullable = false)
     private String message;
 
+    @Column
+    private String messageModifiedAt;
+
 }

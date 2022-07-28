@@ -155,7 +155,7 @@ public class ChatRoomService {
             chatMessageDataList.add(ChatRoomResponseDto.ChatMessageData.builder()
                     .message(chatMessage.getMessage())
                     .userNickname(chatMessage.getWriter().getNickname())
-                    .modifiedAt(chatMessage.getModifiedAt())
+                    .messageModifiedAt(chatMessage.getMessageModifiedAt())
                     .build());
 
         }

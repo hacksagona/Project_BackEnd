@@ -55,7 +55,7 @@ public class ChatRoomResponseDto {
     public static class ChatMessageData{
         private String message;
         private String userNickname;
-        private LocalDateTime modifiedAt;
+        private String messageModifiedAt;
     }
 
     @Getter
