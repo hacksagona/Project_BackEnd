@@ -4,6 +4,7 @@ import com.project.hack.dto.request.PostRequestDto;
 import com.project.hack.dto.response.PostResponseDto;
 import com.project.hack.model.Post;
 import com.project.hack.model.User;
+import com.project.hack.repository.PostLikesRepository;
 import com.project.hack.repository.PostRepository;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.PostService;
@@ -21,6 +22,7 @@ public class PostController {
 
     private final PostService postService;
     private final PostRepository postRepository;
+    private final PostLikesRepository postLikesRepository;
 
 
     // 게시글 작성하기
@@ -47,9 +49,11 @@ public class PostController {
             @RequestParam("page") int page,
             @RequestParam("size") int size,
             @RequestParam("sortBy") String sortBy,
-            @RequestParam("isAsc") boolean isAsc
+            @RequestParam("isAsc") boolean isAsc,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-    return postService.getPosts(page, size,sortBy, isAsc);
+        User user = userDetails.getUser();
+    return postService.getPosts(page, size,sortBy, isAsc,user);
     }
 
     @GetMapping("/api/posts/mypost")
@@ -67,6 +71,7 @@ public class PostController {
     @DeleteMapping("/api/post/{postId}")
     public Long deletePost(@PathVariable Long postId) {
         postRepository.deleteById(postId);
+        System.out.println("포스트 삭제");
         return postId;
     }
     // =============== 골샷 ====================

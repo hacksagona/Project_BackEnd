@@ -34,7 +34,7 @@ public class PostService {
     private final MissionRepository missionRepository;
     private final AwsService awsService;
 
-    public List<PostResponseDto> getPosts(int page, int size, String sortBy, boolean isAsc) {
+    public List<PostResponseDto> getPosts(int page, int size, String sortBy, boolean isAsc, User user) {
 
         Sort.Direction direction = isAsc? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
@@ -44,10 +44,12 @@ public class PostService {
         List<PostResponseDto> postList = new ArrayList<>();
 
         for(Post post : findPost) {
+            if(!Objects.equals(post.getUser().getId(), user.getId())){
+                int likes = postLikesRepository.findByPost(post).size();
+                PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(),likes);
+                postList.add(postResponseDto);
+            }
 
-            int likes = postLikesRepository.findByPostId(post.getPostId()).size();
-            PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(),likes);
-            postList.add(postResponseDto);
         }
         return postList;
     }
@@ -61,7 +63,7 @@ public class PostService {
 
         for(Post post : findPost) {
 
-            int likes = postLikesRepository.findByPostId(post.getPostId()).size();
+            int likes = postLikesRepository.findByPost(post).size();
             PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(),likes);
             postList.add(postResponseDto);
         }
@@ -92,7 +94,7 @@ public class PostService {
     }
 
     public PostResponseDto getpost(Post post) {
-        int likes = postLikesRepository.findByPostId(post.getPostId()).size();
+        int likes = postLikesRepository.findByPost(post).size();
         return new PostResponseDto(post,likes);
     }
 
@@ -112,8 +114,10 @@ public class PostService {
             if(i==11){i =0; break;}
             Long postId = post.getPostId();
             Long userId = user.getId();
-            if(!postDontLikesRepository.findByUserIdAndPostId(userId, postId).isPresent() &&!postLikesRepository.findByUserIdAndPostId(userId,postId).isPresent()){
-                int likes = postLikesRepository.findByPostId(post.getPostId()).size();
+            if(!postDontLikesRepository.findByUserIdAndPostId(userId, postId).isPresent()
+                    &&!postLikesRepository.findByUserIdAndPost(userId,post).isPresent()
+                    || !Objects.equals(post.getUser().getId(), user.getId())){
+                int likes = postLikesRepository.findByPost(post).size();
                 PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(),likes);
                 postResponseDtos.add(postResponseDto);
                 i++;
@@ -131,10 +135,13 @@ public class PostService {
         for (PostLikes postLikes : postLikesList){
             int likeDay = postLikes.getCreatedAtDateOnly().getDayOfMonth();
             if(nowDay == likeDay){
-                Post post = postRepository.findById(postLikes.getPostId()).orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
-                int likes = postLikesRepository.findByPostId(post.getPostId()).size();
-                PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(),likes);
-                postResponseDtos.add(postResponseDto);
+                Post post = postRepository.findById(postLikes.getPost().getPostId()).orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
+                if(!Objects.equals(post.getUser().getId(), user.getId())){
+                    int likes = postLikesRepository.findByPost(post).size();
+                    PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(),likes);
+                    postResponseDtos.add(postResponseDto);
+                }
+
             }
         }
         return postResponseDtos;

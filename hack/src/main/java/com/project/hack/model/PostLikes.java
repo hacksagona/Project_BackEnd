@@ -19,14 +19,15 @@ public class PostLikes extends Timestamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likeId;
 
-    @Column(nullable = false)
-    private Long postId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="POSTID")
+    private Post post;
 
     @Column(nullable = false)
     private Long userId;
 
-    public PostLikes(Long postId, User user){
-        this.postId = postId;
+    public PostLikes(Post post, User user){
+        this.post = post;
         this.userId = user.getId();
     }
 

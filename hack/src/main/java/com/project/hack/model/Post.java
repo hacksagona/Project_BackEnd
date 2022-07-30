@@ -2,13 +2,13 @@ package com.project.hack.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.project.hack.chat.model.ChatMessage;
 import com.project.hack.dto.request.PostRequestDto;
 import com.project.hack.security.UserDetailsImpl;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -39,6 +39,9 @@ public class Post extends Timestamped{
     @JsonManagedReference
     @OneToMany(mappedBy = "post", orphanRemoval = true)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private List<PostLikes> postLikes;
 
 
     public Post(PostRequestDto requestDto, User user, String photoUrl) {
