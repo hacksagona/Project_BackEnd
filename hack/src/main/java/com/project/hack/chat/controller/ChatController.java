@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hack.chat.dto.ChatMessageRequestDto;
 import com.project.hack.chat.model.ChatMessage;
 import com.project.hack.chat.model.ChatRoom;
+import com.project.hack.chat.model.Notice;
 import com.project.hack.chat.repository.ChatMessageRepository;
 import com.project.hack.chat.repository.ChatRoomRepository;
+import com.project.hack.chat.repository.NoticeRepository;
 import com.project.hack.exception.CustomException;
 import com.project.hack.exception.ErrorCode;
 import com.project.hack.model.User;
@@ -19,9 +21,12 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Controller
@@ -33,6 +38,7 @@ public class ChatController {
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
     private final SimpMessageSendingOperations sendingOperations;
+    private final NoticeRepository noticeRepository;
 
     // 웹소켓으로 들어오는 메시지 발행 처리 -> 클라이언트에서는 /pub/templates/chat/message로 발행 요청
     @MessageMapping("/templates/chat/message")
@@ -43,8 +49,9 @@ public class ChatController {
 
         ChatRoom chatRoom = chatRoomRepository.findById(message.getChatRoomId()).orElseThrow(()->new CustomException(ErrorCode.CHATROOM_NOT_FOUND));
         User user = userRepository.findById(message.getUserId()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+        System.out.println(message.getModifiedAt());
 
-        // modifiedAt을 형식에 맞춰 보내기 위한 코드
+        // 채팅보내는 시간을 형식에 맞춰 보내기 위한 코드
         String[] messageModifiedAt = message.getModifiedAt().split("T");
         String date = messageModifiedAt[0];
         String time = messageModifiedAt[1];
@@ -53,32 +60,53 @@ public class ChatController {
         String month = dateList[1];
         String day = dateList[2];
         System.out.println(year +"/"+month+"/"+day);
+        String dayOfWeekStr ="";
+        try{
+            LocalDate localDate = LocalDate.of(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(date));
+            System.out.println("localDate : " + localDate);
+            DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+            dayOfWeekStr = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN);
+            System.out.println("오늘의 요일 : "+dayOfWeekStr);
+        }catch (NumberFormatException e){
+            LocalDate localDate = LocalDate.now();
+            System.out.println("localDate : " + localDate);
+            DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+            dayOfWeekStr = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN);
+            System.out.println("오늘의 요일 : "+dayOfWeekStr);
+        } catch (Exception e){
+            // Exception 처리
+        }
+
         String[] timeList = time.split(":");
         int hour = Integer.parseInt(timeList[0]);
         String min = timeList[1];
         System.out.println("hour : " +hour + " min : "+min);
-        String messagedModifiedAt;
-        if(hour>12){messagedModifiedAt = year+"/" + month+"/"+day + " " + (hour-12)+":"+min+"PM";}
-        else{messagedModifiedAt = year +"/" + month+"/"+day + " " + hour+":"+min+"AM";}
-
+        String messagedModifiedDate = year+"/" + month+"/"+day + " " + dayOfWeekStr;
+        String messageModifiedTime;
+        if(hour>12){messageModifiedTime = (hour-12)+":"+min+"PM";}
+        else{messageModifiedTime = hour+":"+min+"AM";}
+        // 채팅 데이터 저장
         ChatMessage chatMessage = ChatMessage.builder()
                 .message(message.getMessage())
                 .chatRoom(chatRoom)
                 .writer(user)
-                .messageModifiedAt(messagedModifiedAt)
+                .messageModifiedDate(messagedModifiedDate)
+                .messageModifiedTime(messageModifiedTime)
                 .build();
-
 
 //        Websocket에 발행된 메시지를 redis로 발행(publish)
         redisTemplate.convertAndSend(channelTopic.getTopic(),
                 ChatMessageRequestDto.WriteSubscriber.builder()
                         .userId(message.getUserId())
                         .userNickname(user.getNickname())
-                        .messageModifiedAt(messagedModifiedAt)
+                        .messageModifiedDate(messagedModifiedDate)
+                        .messageModifiedTime(messageModifiedTime)
                         .chatRoomId(message.getChatRoomId())
                         .message(message.getMessage())
                         .build());
         System.out.println("메시지 redis 발행 완료");
+
+
         // 룸 modifiedAt
         Long chatMessageId = chatMessageRepository.save(chatMessage).getId();
         System.out.println("chatMessageId : " + chatMessageId);
@@ -88,6 +116,14 @@ public class ChatController {
         chatRoom.setModifiedAt(getMessage.getModifiedAt());
         System.out.println("채팅 수정시간 변경 완료");
 
+        //알림 기능 추가
+//        Notice notice = Notice.builder()
+//                .userId(message.getReceiverId())
+//                .chatRoomId(message.getChatRoomId())
+//                .build();
+//        if(!noticeRepository.findByUserIdAndChatRoomId(notice.getUserId(), notice.getChatRoomId()).isPresent()){
+//            noticeRepository.save(notice);
+//        }
 //        sendingOperations.convertAndSend("/sub/chat/room/"+message.getChatRoomId(),message);
 //        System.out.println("메시지 전송까지 했음 : " +message.getMessage());
         return "킹준호";

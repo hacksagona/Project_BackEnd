@@ -5,8 +5,10 @@ import com.project.hack.chat.dto.ChatRoomRequestDto;
 import com.project.hack.chat.dto.ChatRoomResponseDto;
 import com.project.hack.chat.model.ChatMessage;
 import com.project.hack.chat.model.ChatRoom;
+import com.project.hack.chat.model.Notice;
 import com.project.hack.chat.repository.ChatMessageRepository;
 import com.project.hack.chat.repository.ChatRoomRepository;
+import com.project.hack.chat.repository.NoticeRepository;
 import com.project.hack.exception.CustomException;
 import com.project.hack.exception.ErrorCode;
 import com.project.hack.model.Post;
@@ -31,6 +33,7 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
+    private final NoticeRepository noticeRepository;
 
     //채팅방 생성
     @Transactional
@@ -89,6 +92,8 @@ public class ChatRoomService {
                 if(chatRoom.getChatMessageList().size()==0){
                     lastChat = "채팅이 없습니다.";
                 }else {
+                    boolean notice = noticeRepository.findByUserIdAndChatRoomId(chatRoom.getSender().getId(), chatRoom.getId()).isPresent();
+
                     lastChat = chatRoom.getChatMessageList().get(chatRoom.getChatMessageList().size()-1).getMessage();
                     ChatRoomResponseDto.ChatRoomList chatRoomListBuilder = ChatRoomResponseDto.ChatRoomList.builder()
                             .chatRoomId(chatRoom.getId())
@@ -96,6 +101,7 @@ public class ChatRoomService {
                             .otherNickName(chatRoom.getReceiver().getNickname())
                             .modifiedAt(chatRoom.getModifiedAt())
                             .lastChat(lastChat)
+                            .isNotice(notice)
                             .build();
                     chatRoomListList.add(chatRoomListBuilder);
                 }
@@ -105,6 +111,8 @@ public class ChatRoomService {
                 if(chatRoom.getChatMessageList().size()==0){
                     lastChat = "채팅이 없습니다.";
                 }else {
+                    boolean notice = noticeRepository.findByUserIdAndChatRoomId(chatRoom.getReceiver().getId(), chatRoom.getId()).isPresent();
+
                     lastChat = chatRoom.getChatMessageList().get(chatRoom.getChatMessageList().size()-1).getMessage();
                     ChatRoomResponseDto.ChatRoomList chatRoomListBuilder = ChatRoomResponseDto.ChatRoomList.builder()
                             .chatRoomId(chatRoom.getId())
@@ -112,6 +120,7 @@ public class ChatRoomService {
                             .otherNickName(chatRoom.getSender().getNickname())
                             .modifiedAt(chatRoom.getModifiedAt())
                             .lastChat(lastChat)
+                            .isNotice(notice)
                             .build();
                     chatRoomListList.add(chatRoomListBuilder);
                 }
@@ -124,7 +133,6 @@ public class ChatRoomService {
                 .myNickname(user.getNickname())
                 .chatRoomList(chatRoomListList)
                 .build();
-
     }
 
     public ChatRoomResponseDto.ChatMessageListData roomChatListService(Long userId, Long chatRoomId, LocalDateTime localDateTime) {
@@ -155,10 +163,14 @@ public class ChatRoomService {
             chatMessageDataList.add(ChatRoomResponseDto.ChatMessageData.builder()
                     .message(chatMessage.getMessage())
                     .userNickname(chatMessage.getWriter().getNickname())
-                    .messageModifiedAt(chatMessage.getMessageModifiedAt())
+                    .messageModifiedDate(chatMessage.getMessageModifiedDate())
+                    .messageModifiedTime(chatMessage.getMessageModifiedTime())
                     .build());
 
         }
+//        Notice notice = noticeRepository.findByUserIdAndChatRoomId(userId,chatRoomId).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
+//        noticeRepository.deleteById(notice.getId());
+//        System.out.println("해당 채팅방 알림 삭제");
         return ChatRoomResponseDto.ChatMessageListData.builder()
                 .result("success")
                 .msg("해당 채팅방 채팅 내용 반환 성공")

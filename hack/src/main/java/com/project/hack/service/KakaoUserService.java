@@ -110,21 +110,14 @@ public class KakaoUserService {
         Long id = jsonNode.get("id").asLong();
         System.out.println("id = " + id);
 
-        String nickname = jsonNode.get("properties")
-                .get("nickname").asText();
-
-        String profile_img = jsonNode.get("properties")
-                .get("profile_image").asText();
 
         String email = jsonNode.get("kakao_account")
                 .get("email").asText();
 
-        System.out.println("카카오 사용자 정보: " + id + ", " + nickname + ","+profile_img+", "+ email);
+        System.out.println("카카오 사용자 정보: " + id + ", " + email);
         return SocialUserInfoDto.builder()
                 .social("Kakao")
-                .email(email+"_forKakao")
-                .nickname(nickname)
-                .profile_img(profile_img).build();
+                .email(email+"_forKakao").build();
     }
 
 }

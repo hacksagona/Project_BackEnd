@@ -116,7 +116,7 @@ public class PostService {
             Long userId = user.getId();
             if(!postDontLikesRepository.findByUserIdAndPostId(userId, postId).isPresent()
                     &&!postLikesRepository.findByUserIdAndPost(userId,post).isPresent()
-                    || !Objects.equals(post.getUser().getId(), user.getId())){
+                    && !Objects.equals(post.getUser().getId(), user.getId())){
                 int likes = postLikesRepository.findByPost(post).size();
                 PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(),likes);
                 postResponseDtos.add(postResponseDto);

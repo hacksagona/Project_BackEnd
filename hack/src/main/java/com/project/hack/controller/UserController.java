@@ -2,6 +2,7 @@ package com.project.hack.controller;
 
 import com.amazonaws.services.codecommit.model.UserInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.project.hack.chat.repository.NoticeRepository;
 import com.project.hack.dto.request.SignupRequestDto;
 import com.project.hack.dto.request.UserRequestDto;
 import com.project.hack.dto.response.PhotoDto;
@@ -34,8 +35,7 @@ public class UserController {
     private final GoogleUserService googleUserService;
     private final NaverUserService naverUserService;
     private final UserLoginService userLoginService;
-
-
+    private final NoticeRepository noticeRepository;
 
 
     //====================로그인한 유저정보 확인============
@@ -45,7 +45,10 @@ public class UserController {
         System.out.println("islogin 시작");
         User user = userDetails.getUser();
         System.out.println("email : " + user.getEmail());
-        return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img(),user.isNewUser(),user.isPicChange());
+        boolean isNotice;
+        if(noticeRepository.findByUserId(user.getId()).size()==0){isNotice =false;}
+        else{isNotice = true;}
+        return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img(),user.isNewUser(),user.isPicChange(),isNotice);
     }
 //===========================소셜로그인======================
     @GetMapping("/oauth/kakao/callback")

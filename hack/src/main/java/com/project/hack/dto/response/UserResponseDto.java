@@ -18,6 +18,8 @@ public class UserResponseDto {
     private boolean isNewUser;
     private boolean picChange;
 
+    private boolean isNotice;
+
 
 
     public UserResponseDto(String email, String name) {

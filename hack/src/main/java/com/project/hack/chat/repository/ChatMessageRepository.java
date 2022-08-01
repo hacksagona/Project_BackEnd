@@ -7,8 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ChatMessageRepository extends JpaRepository<ChatMessage,Long> {
 
     List<ChatMessage> findByChatRoomIdOrderByModifiedAt(Long chatroomId);
+
+    Optional<ChatMessage> findByChatRoomAndMessageModifiedDate(ChatRoom chatRoom, String messagedModifiedDate);
 }

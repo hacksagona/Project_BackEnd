@@ -25,6 +25,7 @@ public class CommentService {
     private final PostRepository postRepository;
 
     public ResponseEntity createComment(CommentRequestDto commentRequestDto, Long postId, UserDetailsImpl userDetails) {
+        System.out.println("댓글 작성 시작");
         if(commentRequestDto.getComment().equals("")){
             throw new CustomException(ErrorCode.EMPTY_CONTENT);
         }
@@ -32,6 +33,7 @@ public class CommentService {
         Comment comment = new Comment(commentRequestDto, userDetails, post);
         commentRepository.save(comment);
         CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
+        System.out.println("댓글 작성 완료 : "+ comment.getComment());
         return new ResponseEntity(commentResponseDto, HttpStatus.OK);
     }
     

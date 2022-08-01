@@ -1,6 +1,8 @@
 package com.project.hack.chat.dto;
 import lombok.*;
 
+import javax.persistence.Column;
+
 public class ChatMessageRequestDto {
 
     @Getter
@@ -10,6 +12,7 @@ public class ChatMessageRequestDto {
     @Builder
     public static class Write{
         private Long userId;
+        private Long receiverId;
         private Long chatRoomId;
         private String modifiedAt;
         private String message;
@@ -24,7 +27,9 @@ public class ChatMessageRequestDto {
 
         private Long userId;
         private String userNickname;
-        private String messageModifiedAt;
+        private String messageModifiedDate;
+        private String messageModifiedTime;
+
         private Long chatRoomId;
         private String message;
     }

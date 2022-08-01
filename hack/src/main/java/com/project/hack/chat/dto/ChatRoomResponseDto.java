@@ -34,6 +34,7 @@ public class ChatRoomResponseDto {
         private String lastChat;
         private String otherRegion;
         private LocalDateTime modifiedAt;
+        private boolean isNotice;
     }
 
     @Getter
@@ -55,7 +56,8 @@ public class ChatRoomResponseDto {
     public static class ChatMessageData{
         private String message;
         private String userNickname;
-        private String messageModifiedAt;
+        private String messageModifiedDate;
+        private String messageModifiedTime;
     }
 
     @Getter
