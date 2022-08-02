@@ -1,11 +1,9 @@
 package com.project.hack.chat.model;
 
 
-import com.project.hack.model.Post;
 import com.project.hack.model.Timestamped;
 import com.project.hack.model.User;
 import lombok.*;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 
 import javax.persistence.*;
 import java.io.Serializable;

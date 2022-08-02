@@ -1,8 +1,6 @@
 package com.project.hack.testData;
 
 
-import com.project.hack.model.Post;
-import com.project.hack.model.User;
 import com.project.hack.repository.PostRepository;
 import com.project.hack.repository.UserRepository;
 import com.project.hack.service.UserService;
@@ -12,10 +10,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Component

@@ -1,7 +1,6 @@
 package com.project.hack.dto.response;
 
 import com.project.hack.model.Comment;
-import com.project.hack.model.Post;
 import com.project.hack.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

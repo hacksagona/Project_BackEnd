@@ -59,7 +59,6 @@ public class LikeService {
                     .build();
             users.add(responseDto);
         }
-        System.out.println("좋아요 누른 사람들 정보 : " +users);
         return users;
 
 

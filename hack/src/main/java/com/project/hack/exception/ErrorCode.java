@@ -8,7 +8,6 @@ public enum ErrorCode {
     // 400 Bad Request
     COMMON_BAD_REQUEST_400(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
     EMPTY_CONTENT(HttpStatus.BAD_REQUEST,"필수입력값이 없습니다"),
-    LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST,"제한수량을 초과했습니다"),
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     INVALID_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "만료되었거나 유효하지 않은 토큰입니다"),
     INVALID_LOGIN_ATTEMPT(HttpStatus.UNAUTHORIZED, "로그인에 실패하였습니다(소셜로그인 에러)"),

@@ -1,7 +1,6 @@
 package com.project.hack.dto.response;
 
 
-import com.project.hack.enums.Category;
 import com.project.hack.model.Mission;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -24,5 +24,13 @@ public class Notice {
     @Column(nullable = false)
     private Long chatRoomId;
 
+    @Column(nullable = false)
+    private int count;
+
+    public void updateCount(){
+        this.count= count+1;
+    }
+    public void countToZero(){this.count = 0;}
+
 
 }

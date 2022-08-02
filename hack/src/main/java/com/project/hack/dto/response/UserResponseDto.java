@@ -1,6 +1,5 @@
 package com.project.hack.dto.response;
 
-import com.project.hack.model.User;
 import lombok.*;
 
 @Builder
@@ -18,7 +17,7 @@ public class UserResponseDto {
     private boolean isNewUser;
     private boolean picChange;
 
-    private boolean isNotice;
+    private int noticeCount;
 
 
 

@@ -1,7 +1,6 @@
 package com.project.hack.chat.controller;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hack.chat.dto.ChatMessageRequestDto;
 import com.project.hack.chat.model.ChatMessage;
 import com.project.hack.chat.model.ChatRoom;
@@ -23,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
@@ -117,15 +114,24 @@ public class ChatController {
         System.out.println("채팅 수정시간 변경 완료");
 
         //알림 기능 추가
-//        Notice notice = Notice.builder()
-//                .userId(message.getReceiverId())
-//                .chatRoomId(message.getChatRoomId())
-//                .build();
-//        if(!noticeRepository.findByUserIdAndChatRoomId(notice.getUserId(), notice.getChatRoomId()).isPresent()){
-//            noticeRepository.save(notice);
-//        }
-//        sendingOperations.convertAndSend("/sub/chat/room/"+message.getChatRoomId(),message);
-//        System.out.println("메시지 전송까지 했음 : " +message.getMessage());
+        System.out.println(message.getReceiverId()+"번 유저의 " +message.getChatRoomId()+"번 채팅방 알림 추가");
+        if(!noticeRepository.findByUserIdAndChatRoomId(message.getReceiverId(), message.getChatRoomId()).isPresent()){
+            System.out.println("알림방 없어서 생성");
+            Notice notice = Notice.builder()
+                    .userId(message.getReceiverId())
+                    .chatRoomId(message.getChatRoomId())
+                    .count(1)
+                    .build();
+            noticeRepository.save(notice);
+        }else{
+            System.out.println("알림방 있어서 갯수 추가");
+            Notice notice = noticeRepository.findByUserIdAndChatRoomId(message.getReceiverId(), message.getChatRoomId()).orElseThrow(()-> new IllegalArgumentException("알림 데이터 없음"));
+            System.out.println("업데이트 전 알림수" + notice.getCount());
+            notice.updateCount();
+            System.out.println("업데이트 후 알림수" + notice.getCount());
+            noticeRepository.save(notice);
+        }
+
         return "킹준호";
     }
 

@@ -34,7 +34,7 @@ public class ChatRoomResponseDto {
         private String lastChat;
         private String otherRegion;
         private LocalDateTime modifiedAt;
-        private boolean isNotice;
+        private int noticeCount;
     }
 
     @Getter
@@ -70,8 +70,10 @@ public class ChatRoomResponseDto {
         private LocalDateTime lastDatetime;
         private String myProfileImg;
         private String myNickname;
+        private Long myId;
         private String otherProfileImg;
         private String otherNickName;
+        private Long otherId;
         private int resultCount;
         private List<ChatMessageData> chatMessageDataList;
     }

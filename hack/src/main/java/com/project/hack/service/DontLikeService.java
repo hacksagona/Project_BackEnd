@@ -2,13 +2,10 @@ package com.project.hack.service;
 
 
 import com.project.hack.model.PostDontLikes;
-import com.project.hack.model.PostLikes;
 import com.project.hack.model.User;
 import com.project.hack.repository.PostDontLikesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service

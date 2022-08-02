@@ -1,7 +1,6 @@
 package com.project.hack.repository;
 
 import com.project.hack.model.PostDontLikes;
-import com.project.hack.model.PostLikes;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

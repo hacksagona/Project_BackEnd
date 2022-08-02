@@ -2,7 +2,6 @@ package com.project.hack.controller;
 
 
 import com.project.hack.dto.response.UserResponseDto;
-import com.project.hack.model.PostLikes;
 import com.project.hack.model.User;
 import com.project.hack.repository.PostLikesRepository;
 import com.project.hack.repository.UserRepository;

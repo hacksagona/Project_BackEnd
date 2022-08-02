@@ -11,12 +11,9 @@ import com.project.hack.chat.repository.ChatRoomRepository;
 import com.project.hack.chat.repository.NoticeRepository;
 import com.project.hack.exception.CustomException;
 import com.project.hack.exception.ErrorCode;
-import com.project.hack.model.Post;
 import com.project.hack.model.User;
-import com.project.hack.repository.PostRepository;
 import com.project.hack.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.realm.UserDatabaseRealm;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,12 +35,32 @@ public class ChatRoomService {
     //채팅방 생성
     @Transactional
     public ChatRoomResponseDto.ChatRoomData createChatRoom(@RequestBody ChatRoomRequestDto.Create create) {
+
+        List<ChatRoom> chatRoomList = chatRoomRepository.findAllByUserId(create.getSenderId());
         User sender = userRepository.findById(create.getSenderId()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND));
         User receiver = userRepository.findById(create.getReceiverId()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        System.out.println("senderId : " + sender.getId());
-        System.out.println("receiverId : " + receiver.getId());
+        System.out.println("senderid : " + sender.getId() + " receiverid : "+receiver.getId());
+        for (ChatRoom chatRoom : chatRoomList) {
+            if (Objects.equals(create.getSenderId(), chatRoom.getSender().getId()) && Objects.equals(create.getReceiverId(), chatRoom.getReceiver().getId()) ) {
+                sender = userRepository.findById(create.getSenderId()).orElseThrow(
+                        () -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                receiver = userRepository.findById(create.getReceiverId()).orElseThrow(
+                        () -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                System.out.println("내가 sender 타인은 receiver");
+
+            }else if(Objects.equals(create.getSenderId(), chatRoom.getReceiver().getId()) && Objects.equals(create.getReceiverId(), chatRoom.getSender().getId())){
+                sender = userRepository.findById(create.getReceiverId()).orElseThrow(
+                        () -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                receiver = userRepository.findById(create.getSenderId()).orElseThrow(
+                        () -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                System.out.println("내가 receiver 타인은 sender");
+
+            }
+        }
+        System.out.println("senderid : " + sender.getId() + " receiverid : "+receiver.getId());
+
         //이미 있는지 확인
         ChatRoom chatRoomExistCheck = chatRoomRepository.findBySenderAndReceiver(sender,receiver);
         if(chatRoomExistCheck!=null){
@@ -92,7 +109,10 @@ public class ChatRoomService {
                 if(chatRoom.getChatMessageList().size()==0){
                     lastChat = "채팅이 없습니다.";
                 }else {
-                    boolean notice = noticeRepository.findByUserIdAndChatRoomId(chatRoom.getSender().getId(), chatRoom.getId()).isPresent();
+                    Notice notice = noticeRepository.findByUserIdAndChatRoomId(chatRoom.getSender().getId(), chatRoom.getId()).orElse(null);
+                    int count;
+                    if(notice ==null){count = 0;}
+                    else{count = notice.getCount();}
 
                     lastChat = chatRoom.getChatMessageList().get(chatRoom.getChatMessageList().size()-1).getMessage();
                     ChatRoomResponseDto.ChatRoomList chatRoomListBuilder = ChatRoomResponseDto.ChatRoomList.builder()
@@ -101,7 +121,7 @@ public class ChatRoomService {
                             .otherNickName(chatRoom.getReceiver().getNickname())
                             .modifiedAt(chatRoom.getModifiedAt())
                             .lastChat(lastChat)
-                            .isNotice(notice)
+                            .noticeCount(count)
                             .build();
                     chatRoomListList.add(chatRoomListBuilder);
                 }
@@ -111,7 +131,10 @@ public class ChatRoomService {
                 if(chatRoom.getChatMessageList().size()==0){
                     lastChat = "채팅이 없습니다.";
                 }else {
-                    boolean notice = noticeRepository.findByUserIdAndChatRoomId(chatRoom.getReceiver().getId(), chatRoom.getId()).isPresent();
+                    Notice notice = noticeRepository.findByUserIdAndChatRoomId(chatRoom.getReceiver().getId(), chatRoom.getId()).orElse(null);
+                    int count;
+                    if(notice ==null){count = 0;}
+                    else{count = notice.getCount();}
 
                     lastChat = chatRoom.getChatMessageList().get(chatRoom.getChatMessageList().size()-1).getMessage();
                     ChatRoomResponseDto.ChatRoomList chatRoomListBuilder = ChatRoomResponseDto.ChatRoomList.builder()
@@ -120,7 +143,7 @@ public class ChatRoomService {
                             .otherNickName(chatRoom.getSender().getNickname())
                             .modifiedAt(chatRoom.getModifiedAt())
                             .lastChat(lastChat)
-                            .isNotice(notice)
+                            .noticeCount(count)
                             .build();
                     chatRoomListList.add(chatRoomListBuilder);
                 }
@@ -136,6 +159,8 @@ public class ChatRoomService {
     }
 
     public ChatRoomResponseDto.ChatMessageListData roomChatListService(Long userId, Long chatRoomId, LocalDateTime localDateTime) {
+        System.out.println(userId+ "번의 유저의 "+chatRoomId + "번의 채팅방 데이터 출력");
+
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(
                 ()-> new CustomException(ErrorCode.CHATROOM_NOT_FOUND));
 
@@ -168,9 +193,19 @@ public class ChatRoomService {
                     .build());
 
         }
-//        Notice notice = noticeRepository.findByUserIdAndChatRoomId(userId,chatRoomId).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND));
-//        noticeRepository.deleteById(notice.getId());
-//        System.out.println("해당 채팅방 알림 삭제");
+        System.out.println("채팅룸 채팅정보 넣음");
+
+        //채팅 소환하는 동시에 알림 삭제
+        Notice notice = noticeRepository.findByUserIdAndChatRoomId(userId,chatRoomId).orElse(null);
+        System.out.println("notice 찾음 : " + notice);
+        if(notice !=null){
+            notice.countToZero();
+            noticeRepository.save(notice);
+
+        }
+        System.out.println(userId+ "번의 유저의 "+chatRoomId + "번의 채팅방 알림 0으로 낮춤");
+        if(notice!=null){System.out.println("채팅 카운트 : " + notice.getCount());}
+
         return ChatRoomResponseDto.ChatMessageListData.builder()
                 .result("success")
                 .msg("해당 채팅방 채팅 내용 반환 성공")
@@ -178,8 +213,10 @@ public class ChatRoomService {
                 .lastDatetime(lastDateTime)
                 .myProfileImg(me.getProfile_img())
                 .myNickname(me.getNickname())
+                .myId(me.getId())
                 .otherProfileImg(another.getProfile_img())
                 .otherNickName(another.getNickname())
+                .otherId(another.getId())
                 .chatMessageDataList(chatMessageDataList)
                 .build();
 

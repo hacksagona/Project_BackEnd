@@ -1,11 +1,10 @@
 package com.project.hack.controller;
 
-import com.amazonaws.services.codecommit.model.UserInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.project.hack.chat.model.Notice;
 import com.project.hack.chat.repository.NoticeRepository;
 import com.project.hack.dto.request.SignupRequestDto;
 import com.project.hack.dto.request.UserRequestDto;
-import com.project.hack.dto.response.PhotoDto;
 import com.project.hack.dto.response.SocialUserInfoDto;
 import com.project.hack.dto.response.UserResponseDto;
 import com.project.hack.exception.CustomException;
@@ -15,8 +14,6 @@ import com.project.hack.repository.UserRepository;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,10 +42,13 @@ public class UserController {
         System.out.println("islogin 시작");
         User user = userDetails.getUser();
         System.out.println("email : " + user.getEmail());
-        boolean isNotice;
-        if(noticeRepository.findByUserId(user.getId()).size()==0){isNotice =false;}
-        else{isNotice = true;}
-        return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img(),user.isNewUser(),user.isPicChange(),isNotice);
+        int noticeCount = 0;
+        List<Notice> noticeList = noticeRepository.findByUserId(user.getId());
+        for(Notice notice : noticeList){
+            noticeCount += notice.getCount();
+        }
+        System.out.println("유저 총 알림 갯수 출력 : " + noticeCount);
+        return new UserResponseDto(user.getEmail(), user.getName(),user.getId(),user.getNickname(),user.getProfile_img(),user.isNewUser(),user.isPicChange(),noticeCount);
     }
 //===========================소셜로그인======================
     @GetMapping("/oauth/kakao/callback")

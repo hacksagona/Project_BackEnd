@@ -4,8 +4,6 @@ import com.project.hack.dto.request.CommentRequestDto;
 import com.project.hack.dto.response.CommentResponseDto;
 import com.project.hack.exception.CustomException;
 import com.project.hack.exception.ErrorCode;
-import com.project.hack.model.Comment;
-import com.project.hack.model.Post;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.CommentService;
 import lombok.RequiredArgsConstructor;

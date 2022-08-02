@@ -2,13 +2,10 @@ package com.project.hack.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.project.hack.chat.model.ChatMessage;
 import com.project.hack.dto.request.PostRequestDto;
-import com.project.hack.security.UserDetailsImpl;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Setter

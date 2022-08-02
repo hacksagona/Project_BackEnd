@@ -1,7 +1,6 @@
 package com.project.hack.controller;
 
 
-import com.project.hack.model.PostDontLikes;
 import com.project.hack.model.User;
 import com.project.hack.security.UserDetailsImpl;
 import com.project.hack.service.DontLikeService;

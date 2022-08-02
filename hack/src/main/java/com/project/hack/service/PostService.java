@@ -43,13 +43,10 @@ public class PostService {
         Page<Post> findPost = postRepository.findAll(pageable);
         List<PostResponseDto> postList = new ArrayList<>();
 
-        for(Post post : findPost) {
-            if(!Objects.equals(post.getUser().getId(), user.getId())){
-                int likes = postLikesRepository.findByPost(post).size();
-                PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(),likes);
-                postList.add(postResponseDto);
-            }
-
+        for (Post post : findPost) {
+            int likes = postLikesRepository.findByPost(post).size();
+            PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(), likes);
+            postList.add(postResponseDto);
         }
         return postList;
     }
