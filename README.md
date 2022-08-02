@@ -77,6 +77,7 @@ WebSocketConfig에 configureWebSocketTransport를 추가하여 데이터 크기 
 중복되는 예외도 많아서 불편함을 느꼈고,
 클라이언트에 정확한 에러 상태를 보여주기도 힘들다고 판단하여
 CustomException 클래스를 만들어 전역 예외처리를 하였습니다.
+
 ![image](https://user-images.githubusercontent.com/105098279/182487460-8ed579b9-d63e-4f07-8411-b52e075dba37.png)
 
 ![image](https://user-images.githubusercontent.com/105098279/182487492-16458d8d-a941-4a33-8b0b-16c1f7850697.png)
