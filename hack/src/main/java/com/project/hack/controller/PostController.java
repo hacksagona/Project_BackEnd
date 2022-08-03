@@ -1,6 +1,7 @@
 package com.project.hack.controller;
 
 import com.project.hack.dto.request.PostRequestDto;
+import com.project.hack.dto.response.PostPageResponseDto;
 import com.project.hack.dto.response.PostResponseDto;
 import com.project.hack.model.Post;
 import com.project.hack.model.User;
@@ -45,7 +46,7 @@ public class PostController {
 
     //게시글 불러오기
     @GetMapping("/api/posts")
-    public List<PostResponseDto> getPosts(
+    public PostPageResponseDto getPosts(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
             @RequestParam("sortBy") String sortBy,

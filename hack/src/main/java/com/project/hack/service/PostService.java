@@ -2,6 +2,7 @@ package com.project.hack.service;
 
 import com.project.hack.dto.request.PostRequestDto;
 import com.project.hack.dto.response.PhotoDto;
+import com.project.hack.dto.response.PostPageResponseDto;
 import com.project.hack.dto.response.PostResponseDto;
 import com.project.hack.exception.CustomException;
 import com.project.hack.exception.ErrorCode;
@@ -34,8 +35,9 @@ public class PostService {
     private final MissionRepository missionRepository;
     private final AwsService awsService;
 
-    public List<PostResponseDto> getPosts(int page, int size, String sortBy, boolean isAsc, User user) {
+    public PostPageResponseDto getPosts(int page, int size, String sortBy, boolean isAsc, User user) {
 
+        System.out.println(page + "");
         Sort.Direction direction = isAsc? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
@@ -48,7 +50,7 @@ public class PostService {
             PostResponseDto postResponseDto = new PostResponseDto(post, post.getUser(), likes);
             postList.add(postResponseDto);
         }
-        return postList;
+        return new PostPageResponseDto(findPost.isLast(), findPost.getTotalPages() ,postList);
     }
 
     public List<PostResponseDto> getMyPosts(UserDetailsImpl userDetails) {
