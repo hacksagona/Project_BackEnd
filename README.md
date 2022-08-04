@@ -82,6 +82,9 @@ CustomException 클래스를 만들어 전역 예외처리를 하였습니다.
 
 ![image](https://user-images.githubusercontent.com/105098279/182487492-16458d8d-a941-4a33-8b0b-16c1f7850697.png)
 
+#****ERD****
+
+![image](https://user-images.githubusercontent.com/105098279/182766920-eabc1515-e7d9-45f2-8707-f295473c21cc.png)
 
 
 <br>
